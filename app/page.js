@@ -53,9 +53,9 @@ export default function LoginPage() {
           <div className="brand" style={{ justifyContent: 'center' }}>
             <div className="brand-icon">🗳️</div>
           </div>
-          <h1 className="page-title">Експертне голосування</h1>
+          <h1 className="page-title">ЛР1 - Експертне голосування</h1>
           <p className="page-subtitle" style={{ marginBottom: 0 }}>
-            Анонімне преференційне голосування з множинним порівнянням
+            Обери 3 найкращі на твою думку об'єкти серед множини
           </p>
         </div>
 
@@ -70,8 +70,7 @@ export default function LoginPage() {
           color: 'var(--text-secondary)',
           lineHeight: '1.6'
         }}>
-          <strong style={{ color: 'var(--accent)' }}>Предметна область:</strong> Визначення найпопулярніших серіалів серед експертів шляхом 
-          попереднього преференційного голосування. Кожен експерт обирає ТОП-3 серіали.
+          <strong style={{ color: 'var(--accent)' }}>Предметна область:</strong> культові серіали
         </div>
 
         {error && <div className="alert alert-error">{error}</div>}
@@ -125,7 +124,7 @@ export default function LoginPage() {
           color: 'var(--text-muted)'
         }}>
           <span>20 об&apos;єктів • 20 експертів + викладач</span>
-          <span>ІОД — ЛР</span>
+          <span>ІОД — ЛР1</span>
         </div>
       </div>
     </div>
