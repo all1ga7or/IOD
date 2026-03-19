@@ -21,6 +21,9 @@ build/
 *.pem
 npm-debug.log*
 
+# local json database
+data/
+
 # python (legacy)
 __pycache__/
 *.pyc
