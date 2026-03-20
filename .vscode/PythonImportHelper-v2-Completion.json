@@ -1,0 +1,131 @@
+[
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "redirect",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "url_for",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "session",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "sqlite3",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sqlite3",
+        "description": "sqlite3",
+        "detail": "sqlite3",
+        "documentation": {}
+    },
+    {
+        "label": "get_db_connection",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def get_db_connection():\n    conn = sqlite3.connect('series.db')\n    conn.row_factory = sqlite3.Row\n    return conn\n@app.route('/', methods=['GET', 'POST'])\ndef login():\n    if request.method == 'POST':\n        name = request.form['name']\n        conn = get_db_connection()\n        expert = conn.execute('SELECT * FROM experts WHERE name = ?', (name,)).fetchone()",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "login",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def login():\n    if request.method == 'POST':\n        name = request.form['name']\n        conn = get_db_connection()\n        expert = conn.execute('SELECT * FROM experts WHERE name = ?', (name,)).fetchone()\n        if not expert:\n            # Автоматична реєстрація нового експерта\n            cursor = conn.execute('INSERT INTO experts (name) VALUES (?)', (name,))\n            conn.commit()\n            expert_id = cursor.lastrowid",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "lab1",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def lab1():\n    if 'expert_id' not in session:\n        return redirect(url_for('login'))\n    conn = get_db_connection()\n    if request.method == 'POST':\n        rank1 = request.form.get('rank1')\n        rank2 = request.form.get('rank2')\n        rank3 = request.form.get('rank3')\n        # Захист від однакових виборів\n        if len(set([rank1, rank2, rank3])) < 3:",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "lab2",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def lab2():\n    if 'expert_id' not in session:\n        return redirect(url_for('login'))\n    conn = get_db_connection()\n    if request.method == 'POST':\n        selected_heuristics = request.form.getlist('heuristics')\n        for h_id in selected_heuristics:\n            conn.execute('INSERT INTO lab2_votes (expert_id, heuristic_id) VALUES (?, ?)',\n                         (session['expert_id'], h_id))\n        conn.commit()",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "teacher_protocol",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def teacher_protocol():\n    if session.get('role') != 'teacher':\n        return \"У доступі відмовлено. Лише для викладача.\", 403\n    conn = get_db_connection()\n    # Протокол голосування за серіали (ядро лідерів)\n    votes_lab1 = conn.execute('''\n        SELECT e.name as expert, s1.name as rank1, s2.name as rank2, s3.name as rank3\n        FROM lab1_votes lv\n        JOIN experts e ON lv.expert_id = e.id\n        JOIN series s1 ON lv.rank1_id = s1.id",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app = Flask(__name__)\napp.secret_key = 'super_secret_key' # Замініть на надійний ключ\ndef get_db_connection():\n    conn = sqlite3.connect('series.db')\n    conn.row_factory = sqlite3.Row\n    return conn\n@app.route('/', methods=['GET', 'POST'])\ndef login():\n    if request.method == 'POST':\n        name = request.form['name']",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app.secret_key",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app.secret_key = 'super_secret_key' # Замініть на надійний ключ\ndef get_db_connection():\n    conn = sqlite3.connect('series.db')\n    conn.row_factory = sqlite3.Row\n    return conn\n@app.route('/', methods=['GET', 'POST'])\ndef login():\n    if request.method == 'POST':\n        name = request.form['name']\n        conn = get_db_connection()",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "init_db",
+        "kind": 2,
+        "importPath": "init_db",
+        "description": "init_db",
+        "peekOfCode": "def init_db():\n    conn = sqlite3.connect('series.db')\n    c = conn.cursor()\n    # Таблиця експертів\n    c.execute('''CREATE TABLE IF NOT EXISTS experts (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    name TEXT UNIQUE,\n                    role TEXT DEFAULT 'expert'\n                 )''')\n    # Таблиця об'єктів (Серіали)",
+        "detail": "init_db",
+        "documentation": {}
+    }
+]

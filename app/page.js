@@ -1,131 +1,112 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function LoginPage() {
-  const [name, setName] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+export default function MenuPage() {
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!name.trim()) return;
-
-    setLoading(true);
-    setError('');
-
-    try {
-      const res = await fetch('/api/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim() })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || 'Помилка авторизації');
-        return;
-      }
-
-      // Зберігаємо дані експерта в localStorage
-      localStorage.setItem('expert', JSON.stringify(data));
-
-      if (data.role === 'teacher') {
-        router.push('/admin');
-      } else {
-        router.push('/vote');
-      }
-    } catch (err) {
-      setError('Не вдалося з\'єднатися з сервером');
-    } finally {
-      setLoading(false);
+  const labs = [
+    {
+      id: 'lab1',
+      icon: '🗳️',
+      title: 'Лабораторна робота №1',
+      subtitle: 'Преференційне голосування',
+      description: 'Експертне опитування: обери 3 найкращі серіали серед множини з 20 об\'єктів. Множинні порівняння для визначення ядра лідерів.',
+      details: '20 об\'єктів • 20 експертів + викладач',
+      path: '/lab1',
+      gradient: 'var(--gradient-main)',
+      glow: 'rgba(187, 134, 252, 0.2)'
+    },
+    {
+      id: 'lab2',
+      icon: '🔬',
+      title: 'Лабораторна робота №2',
+      subtitle: 'Евристичне звуження підмножини',
+      description: 'Голосування за евристики відсіювання: обери 3 найкращі евристики для зменшення множини об\'єктів до ≤10. Фільтрація та еволюційне ранжування.',
+      details: '14 об\'єктів • 7 евристик • 21 експерт',
+      path: '/lab2',
+      gradient: 'var(--gradient-teal)',
+      glow: 'rgba(3, 218, 198, 0.2)'
     }
-  };
+  ];
 
   return (
-    <div className="page-center">
-      <div className="glass-card animate-scale" style={{ width: '100%', maxWidth: '440px' }}>
-        {/* Branding */}
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div className="brand" style={{ justifyContent: 'center' }}>
-            <div className="brand-icon">🗳️</div>
-          </div>
-          <h1 className="page-title">ЛР1 - Експертне голосування</h1>
-          <p className="page-subtitle" style={{ marginBottom: 0 }}>
-            Обери 3 найкращі на твою думку об'єкти серед множини
-          </p>
-        </div>
-
-        {/* Описание предметной области */}
+    <div className="page-center" style={{ flexDirection: 'column', gap: '20px' }}>
+      {/* Header */}
+      <div style={{ textAlign: 'center', marginBottom: '12px', animation: 'fadeIn 0.6s ease-out' }}>
         <div style={{
-          background: 'rgba(187, 134, 252, 0.06)',
-          border: '1px solid rgba(187, 134, 252, 0.12)',
-          borderRadius: 'var(--radius-sm)',
-          padding: '14px 16px',
-          marginBottom: '28px',
-          fontSize: '0.82rem',
-          color: 'var(--text-secondary)',
-          lineHeight: '1.6'
-        }}>
-          <strong style={{ color: 'var(--accent)' }}>Предметна область:</strong> культові серіали
-        </div>
+          width: '64px', height: '64px', margin: '0 auto 16px',
+          background: 'var(--gradient-main)', borderRadius: '18px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: '2rem', boxShadow: '0 8px 32px rgba(187, 134, 252, 0.3)'
+        }}>📊</div>
+        <h1 className="page-title" style={{ fontSize: '2.2rem' }}>Інтелектуальна обробка даних</h1>
+        <p className="page-subtitle" style={{ marginBottom: 0 }}>
+          Оберіть лабораторну роботу для продовження
+        </p>
+      </div>
 
-        {error && <div className="alert alert-error">{error}</div>}
-
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label">Ваше ім&apos;я</label>
-            <input
-              id="expert-name-input"
-              type="text"
-              className="input"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Наприклад: Іванов Іван"
-              required
-              autoComplete="off"
-              autoFocus
-            />
+      {/* Lab cards */}
+      <div style={{
+        display: 'flex', flexDirection: 'column', gap: '16px',
+        width: '100%', maxWidth: '560px', animation: 'slideUp 0.5s ease-out'
+      }}>
+        {labs.map(lab => (
+          <div
+            key={lab.id}
+            className="glass-card lab-menu-card"
+            onClick={() => router.push(lab.path)}
+            style={{
+              cursor: 'pointer', padding: '28px',
+              borderLeft: `4px solid transparent`,
+              backgroundImage: `linear-gradient(var(--bg-card), var(--bg-card)), ${lab.gradient}`,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+              position: 'relative', overflow: 'hidden'
+            }}
+          >
+            <div style={{
+              position: 'absolute', top: 0, right: 0, width: '150px', height: '150px',
+              background: lab.glow, borderRadius: '50%', filter: 'blur(60px)',
+              transform: 'translate(40%, -40%)', pointerEvents: 'none'
+            }} />
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', position: 'relative' }}>
+              <div style={{
+                width: '52px', height: '52px', background: lab.gradient,
+                borderRadius: '14px', display: 'flex', alignItems: 'center',
+                justifyContent: 'center', fontSize: '1.6rem', flexShrink: 0,
+                boxShadow: `0 4px 16px ${lab.glow}`
+              }}>{lab.icon}</div>
+              <div style={{ flex: 1 }}>
+                <h2 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '4px' }}>{lab.title}</h2>
+                <p style={{ fontSize: '0.9rem', color: 'var(--accent)', fontWeight: 500, marginBottom: '8px' }}>
+                  {lab.subtitle}
+                </p>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '10px' }}>
+                  {lab.description}
+                </p>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{lab.details}</span>
+              </div>
+              <div style={{
+                color: 'var(--text-muted)', fontSize: '1.2rem', marginTop: '12px',
+                transition: 'var(--transition)', flexShrink: 0
+              }}>→</div>
+            </div>
           </div>
+        ))}
+      </div>
 
-          <button
-            id="login-button"
-            type="submit"
-            className="btn btn-primary"
-            disabled={loading || !name.trim()}
-          >
-            {loading ? '⏳ Вхід...' : '🚀 Увійти та голосувати'}
-          </button>
-        </form>
+      {/* Admin link */}
+      <button
+        className="btn btn-secondary btn-sm"
+        onClick={() => router.push('/admin')}
+        style={{ width: 'auto', padding: '8px 24px', marginTop: '8px' }}
+      >
+        🔐 Панель викладача (ЛР1)
+      </button>
 
-        {/* Кнопка адмін-входу */}
-        <div style={{ textAlign: 'center', marginTop: '24px' }}>
-          <button
-            id="admin-link"
-            className="btn btn-secondary btn-sm"
-            onClick={() => router.push('/admin')}
-            style={{ width: 'auto', padding: '8px 20px' }}
-          >
-            🔐 Панель викладача
-          </button>
-        </div>
-
-        {/* Meta info */}
-        <div style={{
-          marginTop: '28px',
-          paddingTop: '16px',
-          borderTop: '1px solid var(--border-color)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          fontSize: '0.72rem',
-          color: 'var(--text-muted)'
-        }}>
-          <span>20 об&apos;єктів • 20 експертів + викладач</span>
-          <span>ІОД — ЛР1</span>
-        </div>
+      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '8px' }}>
+        ІОД — Інтелектуальна обробка даних в розподілених інформаційних середовищах
       </div>
     </div>
   );
