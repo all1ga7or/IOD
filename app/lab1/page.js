@@ -111,6 +111,15 @@ export default function Lab1LoginPage() {
           </button>
         </div>
 
+        {/* Admin link */}
+        <button
+          className="btn btn-secondary btn-sm"
+          onClick={() => router.push('/admin')}
+          style={{ width: 'auto', padding: '8px 24px', marginTop: '8px' }}
+        >
+          🔐 Панель адміна (ЛР1)
+        </button>
+
         <div style={{
           marginTop: '28px', paddingTop: '16px',
           borderTop: '1px solid var(--border-color)',

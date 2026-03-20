@@ -96,15 +96,6 @@ export default function MenuPage() {
         ))}
       </div>
 
-      {/* Admin link */}
-      <button
-        className="btn btn-secondary btn-sm"
-        onClick={() => router.push('/admin')}
-        style={{ width: 'auto', padding: '8px 24px', marginTop: '8px' }}
-      >
-        🔐 Панель адміна (ЛР1)
-      </button>
-
       <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '8px' }}>
         ІОД — Інтелектуальна обробка даних в розподілених інформаційних середовищах 
       </div>
