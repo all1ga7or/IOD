@@ -14,7 +14,7 @@ export async function GET(request) {
     }
 
     const results = await getResults();
-    return NextResponse.json(results);
+    return NextResponse.json({ ...results, debug_db_url: process.env.DATABASE_URL });
   } catch (error) {
     console.error('Results fetch error:', error);
     return NextResponse.json(
