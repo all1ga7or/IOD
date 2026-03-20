@@ -83,7 +83,7 @@ export default function Lab1LoginPage() {
               className="input"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Наприклад: Іванов Іван"
+              placeholder="Наприклад: Джефрі Епштейн"
               required
               autoComplete="off"
               autoFocus
