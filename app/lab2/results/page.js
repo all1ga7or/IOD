@@ -169,7 +169,7 @@ export default function Lab2ResultsPage() {
 
   const tabs = [
     { id: 'overview', label: '📊 Огляд', icon: '📊' },
-    { id: 'mock', label: '📋 Mock-дані ЛР1', icon: '📋' },
+    { id: 'mock', label: '📋 Дані ЛР1', icon: '📋' },
     { id: 'heuristics', label: '🗳️ Голосування', icon: '🗳️' },
     { id: 'filter', label: '🔬 Фільтрація', icon: '🔬' },
     { id: 'evolution', label: '🧬 Алгоритм', icon: '🧬' },
@@ -206,8 +206,8 @@ export default function Lab2ResultsPage() {
           <div className="stat-label">Об&apos;єктів (підмножина)</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value">{results.stats.total_mock_experts}</div>
-          <div className="stat-label">Експертів (mock)</div>
+          <div className="stat-value">{results.stats.total_lab1_experts}</div>
+          <div className="stat-label">Експертів (ЛР1)</div>
         </div>
         <div className="stat-card">
           <div className="stat-value">{results.stats.heuristic_voters}</div>
@@ -231,7 +231,7 @@ export default function Lab2ResultsPage() {
             className={`btn btn-sm ${activeTab === tab.id ? 'btn-primary' : 'btn-secondary'}`}
             style={{ whiteSpace: 'nowrap', fontSize: '0.8rem' }}
           >
-            {tab.label}
+            {tab.id === 'mock' ? '📋 Дані ЛР1' : tab.label}
           </button>
         ))}
       </div>
@@ -246,7 +246,7 @@ export default function Lab2ResultsPage() {
               <div className="step-item">
                 <span className="step-number">1</span>
                 <div>
-                  <strong>Вхідні дані:</strong> 14 об&apos;єктів (результат ЛР1), 21 експерт, множинні порівняння (2-3 об&apos;єкти кожен)
+                  <strong>Вхідні дані:</strong> {results.stats.total_objects} об&apos;єктів (реєстр ЛР1), {results.stats.total_lab1_experts} експерт(ів), множинні порівняння (3 об&apos;єкти кожен)
                 </div>
               </div>
               <div className="step-item">
@@ -286,15 +286,7 @@ export default function Lab2ResultsPage() {
                   {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`}
                 </div>
                 <div style={{ flex: '0 0 180px', fontWeight: 500 }}>{r.name}</div>
-                <div className="score-bar-container" style={{ flex: 1 }}>
-                  <div className="score-bar">
-                    <div className="score-bar-fill" style={{
-                      width: `${maxObjScore > 0 ? (r.total_score / maxObjScore) * 100 : 0}%`,
-                      background: idx < 3 ? 'var(--gradient-teal)' : 'var(--gradient-main)'
-                    }} />
-                  </div>
-                  <span className="score-value">{r.total_score}</span>
-                </div>
+                <span className="score-value" style={{ flex: 1 }}>{r.total_score} балів</span>
               </div>
             ))}
           </div>
@@ -304,9 +296,9 @@ export default function Lab2ResultsPage() {
       {/* ==================== TAB: MOCK DATA ==================== */}
       {activeTab === 'mock' && (
         <div className="animate-fade">
-          <h2 className="section-title">📋 Mock-дані ЛР1: Множинні порівняння</h2>
+          <h2 className="section-title">📋 Реєстр даних ЛР1: Множинні порівняння</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '16px' }}>
-            21 експерт, кожен обирає 2-3 об&apos;єкти з 14. Ранг: 1=найкращий, 2=середній, 3=нижчий.
+            {results.stats.total_lab1_experts} експертів, кожен обирає 3 об&apos;єкти. Ранг: 1=найкращий, 2=середній, 3=нижчий.
           </p>
 
           <div className="table-wrap" style={{ marginBottom: '32px' }}>
@@ -600,9 +592,14 @@ export default function Lab2ResultsPage() {
 
           {/* Final ranking */}
           <h3 className="section-title" style={{ fontSize: '1rem' }}>🏆 Оптимальне ранжування</h3>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '12px' }}>
-            Найкращий fitness: {results.evolutionResult.bestFitness}
-          </p>
+          <div style={{ marginBottom: '16px' }}>
+            <p style={{ color: 'var(--teal)', fontSize: '0.85rem', marginBottom: '4px', fontWeight: 600 }}>
+              Найкращий fitness (Kendall tau): {results.evolutionResult.bestFitness}
+            </p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', lineHeight: '1.5' }}>
+              <strong>Примітка:</strong> Порядок у рейтингу визначається еволюційним алгоритмом, який максимізує узгодженість (Kendall tau) з парними порівняннями експертів. Тому об&apos;єкти з меншим загальним балом (з ЛР1) можуть займати вищі позиції, якщо вони частіше перемагали в прямих "дуелях" між собою.
+            </p>
+          </div>
           <div className="glass-card" style={{ padding: '24px' }}>
             {results.evolutionResult.ranking.map((r, idx) => (
               <div key={r.id} style={{
