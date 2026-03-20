@@ -46,7 +46,7 @@ export default function Lab1LoginPage() {
 
   return (
     <div className="page-center">
-      <div className="glass-card animate-scale" style={{ width: '100%', maxWidth: '440px' }}>
+      <div className="glass-card animate-scale" style={{ width: '100%', maxWidth: '480px' }}>
         {/* Branding */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div className="brand" style={{ justifyContent: 'center' }}>
@@ -100,8 +100,8 @@ export default function Lab1LoginPage() {
           </button>
         </form>
 
-        {/* Back */}
-        <div style={{ textAlign: 'center', marginTop: '24px' }}>
+        <div style={{ display: 'flex', gap: '8px', marginTop: '24px', flexWrap: 'wrap', justifyContent: 'center' }}>
+          {/* Back */}
           <button
             className="btn btn-secondary btn-sm"
             onClick={() => router.push('/')}
@@ -109,16 +109,15 @@ export default function Lab1LoginPage() {
           >
             ← Меню лабораторних
           </button>
+          {/* Admin link */}
+          <button
+            className="btn btn-secondary btn-sm"
+            onClick={() => router.push('/admin')}
+            style={{ width: 'auto', padding: '8px 16px' }}
+          >
+            🔐 Результати ЛР1
+          </button>
         </div>
-
-        {/* Admin link */}
-        <button
-          className="btn btn-secondary btn-sm"
-          onClick={() => router.push('/admin')}
-          style={{ width: 'auto', padding: '8px 24px', marginTop: '8px' }}
-        >
-          🔐 Панель адміна (ЛР1)
-        </button>
 
         <div style={{
           marginTop: '28px', paddingTop: '16px',
