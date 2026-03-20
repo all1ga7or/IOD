@@ -647,7 +647,7 @@ export default function Lab2ResultsPage() {
             <h3 style={{ fontSize: '1rem', color: 'var(--accent)', marginBottom: '16px' }}>📄 Вміст протоколу</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.88rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>✅</span> <span>Mock-дані ЛР1 (множинні порівняння 21 експерта)</span>
+                <span>✅</span> <span>Mock-дані ЛР1 (множинні порівняння експертів)</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span>✅</span> <span>Статистика 14 об&apos;єктів (бали, місця, згадування)</span>

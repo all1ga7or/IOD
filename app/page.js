@@ -12,7 +12,7 @@ export default function MenuPage() {
       title: 'Лабораторна робота №1',
       subtitle: 'Преференційне голосування',
       description: 'Експертне опитування: обери 3 найкращі серіали серед множини з 20 об\'єктів. Множинні порівняння для визначення ядра лідерів.',
-      details: '20 об\'єктів • 20 експертів + викладач',
+      details: '20 об\'єктів • 21 експерт',
       path: '/lab1',
       gradient: 'var(--gradient-main)',
       glow: 'rgba(187, 134, 252, 0.2)'
@@ -102,11 +102,11 @@ export default function MenuPage() {
         onClick={() => router.push('/admin')}
         style={{ width: 'auto', padding: '8px 24px', marginTop: '8px' }}
       >
-        🔐 Панель викладача (ЛР1)
+        🔐 Панель адміна (ЛР1)
       </button>
 
       <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '8px' }}>
-        ІОД — Інтелектуальна обробка даних в розподілених інформаційних середовищах
+        ІОД — Інтелектуальна обробка даних в розподілених інформаційних середовищах 
       </div>
     </div>
   );

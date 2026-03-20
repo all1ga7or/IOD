@@ -67,7 +67,7 @@ export default function Lab2LoginPage() {
           <strong style={{ color: 'var(--teal)' }}>Предметна область:</strong> культові серіали
           <br/>
           <span style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>
-            14 об&apos;єктів • 7 евристик (Е1–Е7) • Рангове голосування (1-ша = найкраща)
+            14 об&apos;єктів • 7 евристик (Е1–Е7) • Рангове голосування
           </span>
         </div>
 
@@ -82,7 +82,7 @@ export default function Lab2LoginPage() {
               className="input"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Наприклад: Іванов Іван"
+              placeholder="Наприклад: Джефрі Епштейн"
               required
               autoComplete="off"
               autoFocus

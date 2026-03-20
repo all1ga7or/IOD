@@ -132,7 +132,7 @@ export default function Lab2VotePage() {
         <span>
           З 14 об&apos;єктів потрібно звузити множину до ≤10. Оберіть 3 евристики,
           які найкраще допоможуть відфільтрувати найменш значимих претендентів.
-          1-ше місце — найважливіша евристика (3 бали), 3-тє — найменш важлива (1 бал).
+          1-е місце — найвищий пріоритет (3 бали), 2-е — середній (2 бали), 3-є — нижчий (1 бал).
         </span>
       </div>
 
@@ -167,7 +167,7 @@ export default function Lab2VotePage() {
           {/* Rank 1 */}
           <div className="form-group">
             <label className="form-label">
-              <span className="rank-indicator">🥇 1 місце — Найважливіша евристика (3 бали)</span>
+              <span className="rank-indicator">🥇 1 місце</span>
             </label>
             <select
               id="rank1-select"
@@ -186,7 +186,7 @@ export default function Lab2VotePage() {
           {/* Rank 2 */}
           <div className="form-group">
             <label className="form-label">
-              <span className="rank-indicator">🥈 2 місце — Середня за важливістю (2 бали)</span>
+              <span className="rank-indicator">🥈 2 місце</span>
             </label>
             <select
               id="rank2-select"
@@ -205,7 +205,7 @@ export default function Lab2VotePage() {
           {/* Rank 3 */}
           <div className="form-group">
             <label className="form-label">
-              <span className="rank-indicator">🥉 3 місце — Найменш важлива (1 бал)</span>
+              <span className="rank-indicator">🥉 3 місце</span>
             </label>
             <select
               id="rank3-select"
@@ -260,7 +260,7 @@ export default function Lab2VotePage() {
         fontSize: '0.75rem',
         color: 'var(--text-muted)'
       }}>
-        Опитування відкрите • 14 об&apos;єктів • 7 евристик • ІОД — ЛР2
+        ІОД — ЛР2
       </div>
     </div>
   );

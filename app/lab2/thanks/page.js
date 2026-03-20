@@ -75,7 +75,7 @@ export default function Lab2ThanksPage() {
           fontSize: '0.72rem',
           color: 'var(--text-muted)'
         }}>
-          Система евристичного відсіювання — ІОД — ЛР2
+          ІОД — ЛР2
         </div>
       </div>
     </div>

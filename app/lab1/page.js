@@ -117,7 +117,7 @@ export default function Lab1LoginPage() {
           display: 'flex', justifyContent: 'space-between',
           fontSize: '0.72rem', color: 'var(--text-muted)'
         }}>
-          <span>20 об&apos;єктів • 20 експертів + викладач</span>
+          <span>20 об&apos;єктів • 21 експерт</span>
           <span>ІОД — ЛР1</span>
         </div>
       </div>
