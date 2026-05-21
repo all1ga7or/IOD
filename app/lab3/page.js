@@ -132,7 +132,7 @@ export default function Lab3ResultsPage() {
 
   const { inputSummary, objNames, prefMatrix, binaryMatrix, stats,
     cookSumMedians, cookMaxMedians, bestSumD, bestMaxD,
-    finalRanking, e1Ranking, e2Ranking, gaResult, scalingResults } = results;
+    finalRanking, e1Ranking, e2Ranking, gaResult, scalingResults, rankFreqMatrix } = results;
 
   const tabs = [
     { id: 'overview', label: '📊 Огляд' },
@@ -340,6 +340,41 @@ export default function Lab3ResultsPage() {
               title="Бінарна матриця домінування"
               colorFn={binColorFn}
             />
+          </div>
+
+          <div className="glass-card" style={{ padding: '24px', marginTop: '24px' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '16px' }}>
+              <strong>M[r][i]</strong> — кількість експертів, які віддали об'єкту <em>i</em> ранг <em>r</em>.
+            </p>
+            <p style={{ fontWeight: 600, marginBottom: '8px', color: 'var(--accent)' }}>Матриця профілів (Rank Frequency Matrix)</p>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ borderCollapse: 'collapse', fontSize: '0.72rem', minWidth: '100%' }}>
+                <thead>
+                  <tr>
+                    <th style={{ padding: '4px 6px', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-color)', textAlign: 'left' }}>Ранг \ Об'єкт</th>
+                    {objNames.map((name, j) => (
+                      <th key={j} style={{ padding: '4px 6px', color: 'var(--teal)', borderBottom: '1px solid var(--border-color)', whiteSpace: 'nowrap' }}>
+                        {name.split(' ')[0]}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {rankFreqMatrix && rankFreqMatrix.map((row, i) => (
+                    <tr key={i}>
+                      <td style={{ padding: '4px 6px', color: 'var(--teal)', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                        {i < 3 ? `${i + 1} місце` : 'Загалом'}
+                      </td>
+                      {row.map((val, j) => (
+                        <td key={j} style={{ padding: '4px 8px', textAlign: 'center', color: 'var(--text-primary)' }}>
+                          {val}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
