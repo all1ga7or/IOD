@@ -1,11 +1,510 @@
 [
     {
+        "label": "networkx",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "networkx",
+        "description": "networkx",
+        "detail": "networkx",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib.pyplot",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib.pyplot",
+        "description": "matplotlib.pyplot",
+        "detail": "matplotlib.pyplot",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib.patches",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib.patches",
+        "description": "matplotlib.patches",
+        "detail": "matplotlib.patches",
+        "documentation": {}
+    },
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "Fraction",
+        "importPath": "fractions",
+        "description": "fractions",
+        "isExtraImport": true,
+        "detail": "fractions",
+        "documentation": {}
+    },
+    {
+        "label": "Fraction",
+        "importPath": "fractions",
+        "description": "fractions",
+        "isExtraImport": true,
+        "detail": "fractions",
+        "documentation": {}
+    },
+    {
+        "label": "Fraction",
+        "importPath": "fractions",
+        "description": "fractions",
+        "isExtraImport": true,
+        "detail": "fractions",
+        "documentation": {}
+    },
+    {
+        "label": "Fraction",
+        "importPath": "fractions",
+        "description": "fractions",
+        "isExtraImport": true,
+        "detail": "fractions",
+        "documentation": {}
+    },
+    {
+        "label": "Fraction",
+        "importPath": "fractions",
+        "description": "fractions",
+        "isExtraImport": true,
+        "detail": "fractions",
+        "documentation": {}
+    },
+    {
+        "label": "io",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "io",
+        "description": "io",
+        "detail": "io",
+        "documentation": {}
+    },
+    {
+        "label": "get_variant_15_defaults",
+        "importPath": "lab7",
+        "description": "lab7",
+        "isExtraImport": true,
+        "detail": "lab7",
+        "documentation": {}
+    },
+    {
+        "label": "amdahl_speedup",
+        "importPath": "lab7",
+        "description": "lab7",
+        "isExtraImport": true,
+        "detail": "lab7",
+        "documentation": {}
+    },
+    {
+        "label": "amdahl_efficiency",
+        "importPath": "lab7",
+        "description": "lab7",
+        "isExtraImport": true,
+        "detail": "lab7",
+        "documentation": {}
+    },
+    {
+        "label": "amdahl_max_speedup",
+        "importPath": "lab7",
+        "description": "lab7",
+        "isExtraImport": true,
+        "detail": "lab7",
+        "documentation": {}
+    },
+    {
+        "label": "print_report",
+        "importPath": "lab7",
+        "description": "lab7",
+        "isExtraImport": true,
+        "detail": "lab7",
+        "documentation": {}
+    },
+    {
+        "label": "generate_representative_structure",
+        "importPath": "lab7",
+        "description": "lab7",
+        "isExtraImport": true,
+        "detail": "lab7",
+        "documentation": {}
+    },
+    {
+        "label": "visualize_graph",
+        "importPath": "lab7",
+        "description": "lab7",
+        "isExtraImport": true,
+        "detail": "lab7",
+        "documentation": {}
+    },
+    {
+        "label": "amdahl_speedup",
+        "importPath": "lab7",
+        "description": "lab7",
+        "isExtraImport": true,
+        "detail": "lab7",
+        "documentation": {}
+    },
+    {
+        "label": "amdahl_efficiency",
+        "importPath": "lab7",
+        "description": "lab7",
+        "isExtraImport": true,
+        "detail": "lab7",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "math",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "math",
+        "description": "math",
+        "detail": "math",
+        "documentation": {}
+    },
+    {
         "label": "sqlite3",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "sqlite3",
         "description": "sqlite3",
         "detail": "sqlite3",
+        "documentation": {}
+    },
+    {
+        "label": "get_default_variant_15",
+        "kind": 2,
+        "importPath": "lab5.lab5",
+        "description": "lab5.lab5",
+        "peekOfCode": "def get_default_variant_15():\n    \"\"\"Повертає дані для варіанту 15 (Граф ФП=1, продуктивності з варіанту 5).\"\"\"\n    # Продуктивності з таблиці 1, варіант 5\n    productivities = {\n        0: 5, 1: 15, 2: 4, 3: 8, 4: 10, 5: 8,\n        6: 5, 7: 7, 8: 6, 9: 9, 10: 12,\n        11: 8, 12: 5, 13: 9, 14: 7\n    }\n    # Граф ФП=1 (Рисунок 3) — три підсистеми\n    # Підсистема 1: вузли 0,1,2,3,4,5",
+        "detail": "lab5.lab5",
+        "documentation": {}
+    },
+    {
+        "label": "input_custom_data",
+        "kind": 2,
+        "importPath": "lab5.lab5",
+        "description": "lab5.lab5",
+        "peekOfCode": "def input_custom_data():\n    \"\"\"Інтерактивне введення даних користувачем.\"\"\"\n    print(\"\\n\" + \"=\" * 60)\n    print(\"  ІНТЕРАКТИВНИЙ РЕЖИМ ВВЕДЕННЯ ДАНИХ\")\n    print(\"=\" * 60)\n    # Кількість пристроїв\n    while True:\n        try:\n            n = int(input(\"\\nСкільки всього функціональних пристроїв? \"))\n            if n < 1:",
+        "detail": "lab5.lab5",
+        "documentation": {}
+    },
+    {
+        "label": "compute_loads",
+        "kind": 2,
+        "importPath": "lab5.lab5",
+        "description": "lab5.lab5",
+        "peekOfCode": "def compute_loads(productivities, subsystems):\n    \"\"\"\n    Обчислення завантаженостей та реальної продуктивності\n    за першим законом Амдала.\n    \"\"\"\n    results = {}\n    for sub_id, devices in subsystems.items():\n        pi_values = {d: productivities[d] for d in devices}\n        pi_real = min(pi_values.values())\n        loads = {}",
+        "detail": "lab5.lab5",
+        "documentation": {}
+    },
+    {
+        "label": "find_incompatibility",
+        "kind": 2,
+        "importPath": "lab5.lab5",
+        "description": "lab5.lab5",
+        "peekOfCode": "def find_incompatibility(results, productivities):\n    \"\"\"Знаходження несумісності та її причин.\"\"\"\n    total_peak = sum(productivities.values())\n    total_real = sum(r['real_productivity'] for r in results.values())\n    incompatibility = total_peak - total_real\n    causes = []\n    for sub_id, data in results.items():\n        bottleneck_val = data['pi_real']\n        for d in data['devices']:\n            if productivities[d] != bottleneck_val:",
+        "detail": "lab5.lab5",
+        "documentation": {}
+    },
+    {
+        "label": "suggest_compatible",
+        "kind": 2,
+        "importPath": "lab5.lab5",
+        "description": "lab5.lab5",
+        "peekOfCode": "def suggest_compatible(results, productivities):\n    \"\"\"Запропонувати значення продуктивностей для сумісної системи.\"\"\"\n    suggestion = dict(productivities)\n    for sub_id, data in results.items():\n        target = data['pi_real']\n        for d in data['devices']:\n            suggestion[d] = target\n    return suggestion\ndef visualize_graph(productivities, subsystems, edges, results):\n    \"\"\"Візуалізація графа системи функціональних пристроїв.\"\"\"",
+        "detail": "lab5.lab5",
+        "documentation": {}
+    },
+    {
+        "label": "visualize_graph",
+        "kind": 2,
+        "importPath": "lab5.lab5",
+        "description": "lab5.lab5",
+        "peekOfCode": "def visualize_graph(productivities, subsystems, edges, results):\n    \"\"\"Візуалізація графа системи функціональних пристроїв.\"\"\"\n    G = nx.DiGraph()\n    for d, pi in productivities.items():\n        G.add_node(d, productivity=pi)\n    for u, v in edges:\n        G.add_edge(u, v)\n    colors_palette = ['#4FC3F7', '#81C784', '#FFB74D', '#CE93D8', '#EF5350']\n    fig, ax = plt.subplots(1, 1, figsize=(14, 8))\n    fig.patch.set_facecolor('#1a1a2e')",
+        "detail": "lab5.lab5",
+        "documentation": {}
+    },
+    {
+        "label": "print_results",
+        "kind": 2,
+        "importPath": "lab5.lab5",
+        "description": "lab5.lab5",
+        "peekOfCode": "def print_results(results, productivities):\n    \"\"\"Виведення результатів обчислень.\"\"\"\n    print(\"\\n\" + \"=\" * 60)\n    print(\"  РЕЗУЛЬТАТИ ОБЧИСЛЕНЬ\")\n    print(\"=\" * 60)\n    for sub_id in sorted(results.keys()):\n        data = results[sub_id]\n        print(f\"\\n{'─' * 50}\")\n        print(f\"  Підсистема {sub_id}: пристрої {data['devices']}\")\n        print(f\"{'─' * 50}\")",
+        "detail": "lab5.lab5",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "lab5.lab5",
+        "description": "lab5.lab5",
+        "peekOfCode": "def main():\n    print(\"╔══════════════════════════════════════════════════════════╗\")\n    print(\"║  Лабораторна робота №5                                  ║\")\n    print(\"║  Визначення характеристик систем ФП                     ║\")\n    print(\"║  Інтелектуальна обробка даних                           ║\")\n    print(\"╚══════════════════════════════════════════════════════════╝\")\n    print(\"\\nОберіть режим роботи:\")\n    print(\"  1 — Варіант 15 (за замовчуванням)\")\n    print(\"  2 — Введення даних вручну\")\n    choice = input(\"\\nВаш вибір [1/2]: \").strip()",
+        "detail": "lab5.lab5",
+        "documentation": {}
+    },
+    {
+        "label": "get_default_variant_15",
+        "kind": 2,
+        "importPath": "lab6.lab6",
+        "description": "lab6.lab6",
+        "peekOfCode": "def get_default_variant_15():\n    \"\"\"Дані для варіанту 15 (Граф ФП=1, стовпець 5 таблиці ЛР6).\"\"\"\n    productivities = {\n        0: 6, 1: 9, 2: 5, 3: 7, 4: 12, 5: 8,\n        6: 5, 7: 5, 8: 9, 9: 5, 10: 15,\n        11: 9, 12: 7, 13: 8, 14: 5\n    }\n    # Граф ФП=1 — три підсистеми\n    subsystems = {\n        1: [0, 1, 2, 3, 4, 5],",
+        "detail": "lab6.lab6",
+        "documentation": {}
+    },
+    {
+        "label": "input_custom_data",
+        "kind": 2,
+        "importPath": "lab6.lab6",
+        "description": "lab6.lab6",
+        "peekOfCode": "def input_custom_data():\n    \"\"\"Інтерактивне введення довільних параметрів системи.\"\"\"\n    print(\"\\n\" + \"=\" * 60)\n    print(\"  ВВЕДЕННЯ ПАРАМЕТРІВ ВРУЧНУ\")\n    print(\"=\" * 60)\n    while True:\n        try:\n            n = int(input(\"\\nКількість функціональних пристроїв: \"))\n            if n < 1:\n                print(\"Мінімум один пристрій!\")",
+        "detail": "lab6.lab6",
+        "documentation": {}
+    },
+    {
+        "label": "compute_loads",
+        "kind": 2,
+        "importPath": "lab6.lab6",
+        "description": "lab6.lab6",
+        "peekOfCode": "def compute_loads(productivities, subsystems):\n    \"\"\"Розрахунок завантаженостей і реальної продуктивності за Амдалом.\"\"\"\n    results = {}\n    for sid, devices in subsystems.items():\n        pi_vals = {d: productivities[d] for d in devices}\n        pi_real = min(pi_vals.values())\n        loads = {}\n        for d in devices:\n            loads[d] = Fraction(pi_real).limit_denominator(1000) / \\\n                       Fraction(productivities[d]).limit_denominator(1000)",
+        "detail": "lab6.lab6",
+        "documentation": {}
+    },
+    {
+        "label": "compute_system_metrics",
+        "kind": 2,
+        "importPath": "lab6.lab6",
+        "description": "lab6.lab6",
+        "peekOfCode": "def compute_system_metrics(results, productivities):\n    \"\"\"Обчислення завантаженості системи (ρ) та прискорення (S).\"\"\"\n    total_peak = sum(productivities.values())\n    total_real = sum(r['real_productivity'] for r in results.values())\n    max_pi = max(productivities.values())\n    rho = total_real / total_peak if total_peak > 0 else 0\n    speedup = total_real / max_pi if max_pi > 0 else 0\n    return {\n        'total_peak': total_peak,\n        'total_real': total_real,",
+        "detail": "lab6.lab6",
+        "documentation": {}
+    },
+    {
+        "label": "find_incompatibility",
+        "kind": 2,
+        "importPath": "lab6.lab6",
+        "description": "lab6.lab6",
+        "peekOfCode": "def find_incompatibility(results, productivities):\n    \"\"\"Пошук несумісності та її джерел.\"\"\"\n    total_peak = sum(productivities.values())\n    total_real = sum(r['real_productivity'] for r in results.values())\n    delta = total_peak - total_real\n    causes = []\n    for sid, data in results.items():\n        bv = data['pi_real']\n        for d in data['devices']:\n            if productivities[d] != bv:",
+        "detail": "lab6.lab6",
+        "documentation": {}
+    },
+    {
+        "label": "suggest_compatible",
+        "kind": 2,
+        "importPath": "lab6.lab6",
+        "description": "lab6.lab6",
+        "peekOfCode": "def suggest_compatible(results, productivities):\n    \"\"\"Формування двох варіантів сумісної конфігурації.\"\"\"\n    # Варіант А: зниження до мінімуму\n    low = dict(productivities)\n    for sid, data in results.items():\n        for d in data['devices']:\n            low[d] = data['pi_real']\n    # Варіант Б: підвищення до максимуму\n    high = dict(productivities)\n    for sid, data in results.items():",
+        "detail": "lab6.lab6",
+        "documentation": {}
+    },
+    {
+        "label": "visualize_graph",
+        "kind": 2,
+        "importPath": "lab6.lab6",
+        "description": "lab6.lab6",
+        "peekOfCode": "def visualize_graph(productivities, subsystems, edges, results):\n    \"\"\"Побудова орієнтованого графа системи.\"\"\"\n    G = nx.DiGraph()\n    for d, pi in productivities.items():\n        G.add_node(d, productivity=pi)\n    for u, v in edges:\n        G.add_edge(u, v)\n    palette = ['#4FC3F7', '#81C784', '#FFB74D', '#CE93D8', '#EF5350']\n    fig, ax = plt.subplots(1, 1, figsize=(14, 8))\n    fig.patch.set_facecolor('#1a1a2e')",
+        "detail": "lab6.lab6",
+        "documentation": {}
+    },
+    {
+        "label": "print_results",
+        "kind": 2,
+        "importPath": "lab6.lab6",
+        "description": "lab6.lab6",
+        "peekOfCode": "def print_results(results, productivities):\n    \"\"\"Виведення усіх результатів у консоль.\"\"\"\n    print(\"\\n\" + \"=\" * 60)\n    print(\"  РЕЗУЛЬТАТИ АНАЛІЗУ СИСТЕМИ\")\n    print(\"=\" * 60)\n    for sid in sorted(results.keys()):\n        data = results[sid]\n        print(f\"\\n{'─' * 50}\")\n        print(f\"  Підсистема {sid}: {data['devices']}\")\n        print(f\"{'─' * 50}\")",
+        "detail": "lab6.lab6",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "lab6.lab6",
+        "description": "lab6.lab6",
+        "peekOfCode": "def main():\n    print(\"╔══════════════════════════════════════════════════════════╗\")\n    print(\"║  Лабораторна робота №6                                  ║\")\n    print(\"║  Характеристики систем ФП (продовження)                 ║\")\n    print(\"║  Інтелектуальна обробка даних                           ║\")\n    print(\"╚══════════════════════════════════════════════════════════╝\")\n    print(\"\\nРежим:\")\n    print(\"  1 — Варіант 15 (автоматично)\")\n    print(\"  2 — Власні дані\")\n    choice = input(\"\\n[1/2]: \").strip()",
+        "detail": "lab6.lab6",
+        "documentation": {}
+    },
+    {
+        "label": "get_variant_15_defaults",
+        "kind": 2,
+        "importPath": "lab7.lab7",
+        "description": "lab7.lab7",
+        "peekOfCode": "def get_variant_15_defaults():\n    \"\"\"Повертає N, n, s і структуру графа для Рисунку 5.\"\"\"\n    N = 20   # загальна кількість операцій\n    n = 10   # послідовних (критичний шлях)\n    s = 5    # ширина алгоритму = кількість процесорів\n    # Граф Рисунку 5 — вершини 1..20, розбиті по ярусах:\n    #   Ярус 1:  {1}\n    #   Ярус 2:  {2}\n    #   Ярус 3:  {3, 4, 5, 6, 7}   ← ширина 5\n    #   Ярус 4:  {8, 9}            ← продовження гілок 3→8, 7→9",
+        "detail": "lab7.lab7",
+        "documentation": {}
+    },
+    {
+        "label": "generate_representative_structure",
+        "kind": 2,
+        "importPath": "lab7.lab7",
+        "description": "lab7.lab7",
+        "peekOfCode": "def generate_representative_structure(N, n, s):\n    \"\"\"\n    Generates a representative graph structure for given N, n, s.\n    n - number of tiers (critical path).\n    N - total vertices.\n    s - max width (processors).\n    \"\"\"\n    # 1. Create n tiers. Each has at least 1 node (the critical chain).\n    tiers = {i: [i] for i in range(1, n + 1)}\n    # 2. Distribute leftover N-n nodes into tiers (prefer middle tiers).",
+        "detail": "lab7.lab7",
+        "documentation": {}
+    },
+    {
+        "label": "amdahl_speedup",
+        "kind": 2,
+        "importPath": "lab7.lab7",
+        "description": "lab7.lab7",
+        "peekOfCode": "def amdahl_speedup(beta, s):\n    \"\"\"Другий закон Амдала: R_s = s / (β·s + 1 − β).\"\"\"\n    return Fraction(s) / (beta * s + (1 - beta))\ndef amdahl_efficiency(R_s, s):\n    \"\"\"Ефективність: E = R_s / s.\"\"\"\n    return Fraction(R_s) / s\ndef amdahl_max_speedup(beta):\n    \"\"\"Третій закон Амдала: R_max = 1/β.\"\"\"\n    if beta == 0:\n        return float('inf')",
+        "detail": "lab7.lab7",
+        "documentation": {}
+    },
+    {
+        "label": "amdahl_efficiency",
+        "kind": 2,
+        "importPath": "lab7.lab7",
+        "description": "lab7.lab7",
+        "peekOfCode": "def amdahl_efficiency(R_s, s):\n    \"\"\"Ефективність: E = R_s / s.\"\"\"\n    return Fraction(R_s) / s\ndef amdahl_max_speedup(beta):\n    \"\"\"Третій закон Амдала: R_max = 1/β.\"\"\"\n    if beta == 0:\n        return float('inf')\n    return Fraction(1) / beta\n# ─────────── Режими введення ───────────\ndef input_manual():",
+        "detail": "lab7.lab7",
+        "documentation": {}
+    },
+    {
+        "label": "amdahl_max_speedup",
+        "kind": 2,
+        "importPath": "lab7.lab7",
+        "description": "lab7.lab7",
+        "peekOfCode": "def amdahl_max_speedup(beta):\n    \"\"\"Третій закон Амдала: R_max = 1/β.\"\"\"\n    if beta == 0:\n        return float('inf')\n    return Fraction(1) / beta\n# ─────────── Режими введення ───────────\ndef input_manual():\n    \"\"\"Ручне введення параметрів через консоль.\"\"\"\n    print(\"\\n\" + \"=\" * 55)\n    print(\"  ВВЕДЕННЯ ПАРАМЕТРІВ\")",
+        "detail": "lab7.lab7",
+        "documentation": {}
+    },
+    {
+        "label": "input_manual",
+        "kind": 2,
+        "importPath": "lab7.lab7",
+        "description": "lab7.lab7",
+        "peekOfCode": "def input_manual():\n    \"\"\"Ручне введення параметрів через консоль.\"\"\"\n    print(\"\\n\" + \"=\" * 55)\n    print(\"  ВВЕДЕННЯ ПАРАМЕТРІВ\")\n    print(\"=\" * 55)\n    while True:\n        try:\n            N = int(input(\"\\n  Кількість операцій (N): \"))\n            if N < 1:\n                print(\"  N має бути ≥ 1!\")",
+        "detail": "lab7.lab7",
+        "documentation": {}
+    },
+    {
+        "label": "load_from_file",
+        "kind": 2,
+        "importPath": "lab7.lab7",
+        "description": "lab7.lab7",
+        "peekOfCode": "def load_from_file(path):\n    \"\"\"\n    Зчитування параметрів з текстового файлу.\n    Формат файлу — три рядки:\n        N=20\n        n=10\n        s=5\n    \"\"\"\n    params = {}\n    with open(path, 'r', encoding='utf-8') as f:",
+        "detail": "lab7.lab7",
+        "documentation": {}
+    },
+    {
+        "label": "visualize_graph",
+        "kind": 2,
+        "importPath": "lab7.lab7",
+        "description": "lab7.lab7",
+        "peekOfCode": "def visualize_graph(tiers, edges, critical_path, N, n, s, beta, R_s, E, title_suffix=\"\"):\n    \"\"\"Builds a layered graph visualization.\"\"\"\n    if not HAS_GRAPHICS:\n        print(\"\\n  ! matplotlib / networkx missing. Install: pip install matplotlib networkx\")\n        return\n    G = nx.DiGraph()\n    for tier_nodes in tiers.values():\n        for node in tier_nodes:\n            G.add_node(node)\n    for u, v in edges:",
+        "detail": "lab7.lab7",
+        "documentation": {}
+    },
+    {
+        "label": "print_report",
+        "kind": 2,
+        "importPath": "lab7.lab7",
+        "description": "lab7.lab7",
+        "peekOfCode": "def print_report(N, n, s, beta, R_s, E, R_max):\n    \"\"\"Форматований вивід усіх обчислень.\"\"\"\n    print(\"\\n\" + \"=\" * 55)\n    print(\"  РЕЗУЛЬТАТИ  (закони Амдала)\")\n    print(\"=\" * 55)\n    print(f\"\\n  Загальна кількість операцій:  N = {N}\")\n    print(f\"  Послідовних операцій:         n = {n}\")\n    print(f\"  Кількість процесорів:         s = {s}\")\n    print(f\"\\n{'-' * 55}\")\n    print(f\"  Частка послідовних обчислень:\")",
+        "detail": "lab7.lab7",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "lab7.lab7",
+        "description": "lab7.lab7",
+        "peekOfCode": "def main():\n    print(\"=\" * 57)\n    print(\"  Laboratorna robota #7\")\n    print(\"  Pryskorennia i efektyvnist za zakonamy Amdala\")\n    print(\"  Intelektualna obrobka danykh\")\n    print(\"=\" * 57)\n    print(\"\\nOberit rezhym:\")\n    print(\"  1 -- Variant 15 (Rysunok 5, avtomatychno)\")\n    print(\"  2 -- Vvesty parametry vruchnu\")\n    print(\"  3 -- Zchytaty z fajlu\")",
+        "detail": "lab7.lab7",
+        "documentation": {}
+    },
+    {
+        "label": "test_variant_15",
+        "kind": 2,
+        "importPath": "lab7.test_lab7",
+        "description": "lab7.test_lab7",
+        "peekOfCode": "def test_variant_15():\n    print(\"Testing Lab 7 - Variant 15 (Figure 5)\")\n    N, n, s, tiers, edges, critical_path = get_variant_15_defaults()\n    beta = Fraction(n, N)\n    R_s = amdahl_speedup(beta, s)\n    E = amdahl_efficiency(R_s, s)\n    R_max = amdahl_max_speedup(beta)\n    print_report(N, n, s, beta, R_s, E, R_max)\n    # Assertions for correctness\n    assert N == 20",
+        "detail": "lab7.test_lab7",
+        "documentation": {}
+    },
+    {
+        "label": "sys.stdout",
+        "kind": 5,
+        "importPath": "lab7.test_lab7",
+        "description": "lab7.test_lab7",
+        "peekOfCode": "sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')\ndef test_variant_15():\n    print(\"Testing Lab 7 - Variant 15 (Figure 5)\")\n    N, n, s, tiers, edges, critical_path = get_variant_15_defaults()\n    beta = Fraction(n, N)\n    R_s = amdahl_speedup(beta, s)\n    E = amdahl_efficiency(R_s, s)\n    R_max = amdahl_max_speedup(beta)\n    print_report(N, n, s, beta, R_s, E, R_max)\n    # Assertions for correctness",
+        "detail": "lab7.test_lab7",
+        "documentation": {}
+    },
+    {
+        "label": "test_custom_generation",
+        "kind": 2,
+        "importPath": "lab7.verify_gen_vis",
+        "description": "lab7.verify_gen_vis",
+        "peekOfCode": "def test_custom_generation():\n    print(\"Testing Custom Graph Generation...\")\n    N, n, s = 15, 7, 3\n    tiers, edges, critical_path = generate_representative_structure(N, n, s)\n    print(f\"Nodes in tiers: {sum(len(t) for t in tiers.values())} (Expected {N})\")\n    print(f\"Max width: {max(len(t) for t in tiers.values())} (Expected <= {s})\")\n    print(f\"Path length: {len(critical_path)} (Expected {n})\")\n    beta = Fraction(n, N)\n    R_s = amdahl_speedup(beta, s)\n    E = amdahl_efficiency(R_s, s)",
+        "detail": "lab7.verify_gen_vis",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_speedup_amdahl",
+        "kind": 2,
+        "importPath": "lab8.lab8",
+        "description": "lab8.lab8",
+        "peekOfCode": "def calculate_speedup_amdahl(l, beta):\n    \"\"\"\n    S = l / (l * beta + 1 - beta)\n    \"\"\"\n    return l / (l * beta + 1 - beta)\ndef calculate_processors_needed(target_ratio, beta):\n    \"\"\"\n    l >= (a / (1 - a)) * ((1 - beta) / beta)\n    where a is the target ratio of Smax\n    \"\"\"",
+        "detail": "lab8.lab8",
+        "documentation": {}
+    },
+    {
+        "label": "calculate_processors_needed",
+        "kind": 2,
+        "importPath": "lab8.lab8",
+        "description": "lab8.lab8",
+        "peekOfCode": "def calculate_processors_needed(target_ratio, beta):\n    \"\"\"\n    l >= (a / (1 - a)) * ((1 - beta) / beta)\n    where a is the target ratio of Smax\n    \"\"\"\n    if target_ratio >= 1.0:\n        return float('inf')\n    a = target_ratio\n    l = (a / (1 - a)) * ((1 - beta) / beta)\n    return math.ceil(l)",
+        "detail": "lab8.lab8",
+        "documentation": {}
+    },
+    {
+        "label": "solve_for_l",
+        "kind": 2,
+        "importPath": "lab8.lab8",
+        "description": "lab8.lab8",
+        "peekOfCode": "def solve_for_l(s_target, beta):\n    \"\"\"\n    s_target = l / (l * beta + 1 - beta)\n    l = s_target * (1 - beta) / (1 - s_target * beta)\n    \"\"\"\n    denom = 1 - s_target * beta\n    if denom <= 0:\n        return None\n    l = s_target * (1 - beta) / denom\n    return l",
+        "detail": "lab8.lab8",
+        "documentation": {}
+    },
+    {
+        "label": "print_results",
+        "kind": 2,
+        "importPath": "lab8.lab8",
+        "description": "lab8.lab8",
+        "peekOfCode": "def print_results(beta, s_given, a1, a2):\n    parallel = 1 - beta\n    s_max = 1 / beta if beta > 0 else float('inf')\n    print(f\"\\n--- Результати аналізу ---\")\n    print(f\"Частка паралельних обчислень (1 - beta): {parallel:.2f}\")\n    print(f\"Частка послідовних обчислень (beta): {beta:.2f}\")\n    print(f\"Теоретичне граничне прискорення (Smax): {s_max:.3f}\")\n    print(f\"\\n1. Перевірка заданого прискорення S = {s_given}:\")\n    l_calc = solve_for_l(s_given, beta)\n    if l_calc is None or l_calc <= 0:",
+        "detail": "lab8.lab8",
+        "documentation": {}
+    },
+    {
+        "label": "run_interactive",
+        "kind": 2,
+        "importPath": "lab8.lab8",
+        "description": "lab8.lab8",
+        "peekOfCode": "def run_interactive():\n    print(\"Введіть дані для розрахунку:\")\n    try:\n        parallel = float(input(\"Частка паралельних обчислень (1 - beta): \"))\n        s_given = float(input(\"Задане максимальне прискорення (S): \"))\n        a1 = float(input(\"Нижня межа граничного прискорення (a1, напр. 0.65): \"))\n        a2 = float(input(\"Верхня межа граничного прискорення (a2, напр. 0.90): \"))\n        beta = 1 - parallel\n        print_results(beta, s_given, a1, a2)\n    except ValueError:",
+        "detail": "lab8.lab8",
+        "documentation": {}
+    },
+    {
+        "label": "run_file",
+        "kind": 2,
+        "importPath": "lab8.lab8",
+        "description": "lab8.lab8",
+        "peekOfCode": "def run_file(filename):\n    try:\n        with open(filename, 'r') as f:\n            lines = f.readlines()\n            # Expecting CSV or Space-separated: parallel s_given a1 a2\n            for line in lines:\n                parts = line.split()\n                if len(parts) >= 4:\n                    parallel = float(parts[0])\n                    s_given = float(parts[1])",
+        "detail": "lab8.lab8",
         "documentation": {}
     },
     {
