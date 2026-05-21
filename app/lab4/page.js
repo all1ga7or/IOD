@@ -204,49 +204,135 @@ export default function Lab4ResultsPage() {
       )}
 
       {/* ===== SATISFACTION ===== */}
-      {activeTab === 'satisfaction' && (
-        <div className="animate-fade">
-          <h2 className="section-title">😊 Рівень задоволеності експертів</h2>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', fontSize: '0.85rem' }}>
-            Індекс обчислюється як зворотна величина до відстані між індивідуальною трійкою експерта та колективним ранжуванням. 
-            <code style={{ marginLeft: '10px', color: 'var(--accent)' }}>{satisfaction.formula}</code>
-          </p>
+      {activeTab === 'satisfaction' && (() => {
+        const allObjectsInPicks = new Set();
+        satisfaction.indices.forEach(idx => {
+          idx.details.forEach(d => allObjectsInPicks.add(d.objectName));
+        });
 
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Експерт</th>
-                  <th>Відстань (dⱼ)</th>
-                  <th>Графік</th>
-                  <th>Задоволеність</th>
-                </tr>
-              </thead>
-              <tbody>
-                {satisfaction.indices.map((idx, i) => (
-                  <tr key={i}>
-                    <td><strong>{idx.expertName}</strong></td>
-                    <td><span className="badge badge-purple">{idx.distance}</span></td>
-                    <td style={{ width: '40%' }}>
-                      <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
-                        <div style={{ 
-                          width: `${idx.satisfaction}%`, 
-                          height: '100%', 
-                          background: idx.satisfaction > 70 ? 'var(--teal)' : idx.satisfaction > 40 ? '#ffc107' : '#cf6679',
-                          transition: 'width 1s ease-out'
-                        }} />
-                      </div>
-                    </td>
-                    <td style={{ fontWeight: 700, color: idx.satisfaction > 70 ? 'var(--teal)' : idx.satisfaction > 40 ? '#ffc107' : '#cf6679' }}>
-                      {idx.satisfaction}%
-                    </td>
+        const rowObjects = Array.from(allObjectsInPicks).sort((a, b) => {
+          const rankA = chosenRanking.indexOf(a);
+          const rankB = chosenRanking.indexOf(b);
+          if (rankA !== -1 && rankB !== -1) return rankA - rankB;
+          if (rankA !== -1) return -1;
+          if (rankB !== -1) return 1;
+          return a.localeCompare(b);
+        });
+
+        const normalizedMaxD = (satisfaction.n - 3) * 3 || 1;
+
+        return (
+          <div className="animate-fade">
+            <h2 className="section-title">😊 Рівень задоволеності експертів</h2>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', fontSize: '0.85rem' }}>
+              Індекс обчислюється як зворотна величина до відстані між індивідуальною трійкою експерта та колективним ранжуванням. 
+              <code style={{ marginLeft: '10px', color: 'var(--accent)' }}>{satisfaction.formula}</code>
+            </p>
+
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Експерт</th>
+                    <th>Відстань (dⱼ)</th>
+                    <th>Графік</th>
+                    <th>Задоволеність</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {satisfaction.indices.map((idx, i) => (
+                    <tr key={i}>
+                      <td><strong>{idx.expertName}</strong></td>
+                      <td><span className="badge badge-purple">{idx.distance}</span></td>
+                      <td style={{ width: '40%' }}>
+                        <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                          <div style={{ 
+                            width: `${idx.satisfaction}%`, 
+                            height: '100%', 
+                            background: idx.satisfaction > 70 ? 'var(--teal)' : idx.satisfaction > 40 ? '#ffc107' : '#cf6679',
+                            transition: 'width 1s ease-out'
+                          }} />
+                        </div>
+                      </td>
+                      <td style={{ fontWeight: 700, color: idx.satisfaction > 70 ? 'var(--teal)' : idx.satisfaction > 40 ? '#ffc107' : '#cf6679' }}>
+                        {idx.satisfaction}%
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <h3 style={{ color: 'var(--accent)', marginTop: '36px', marginBottom: '16px' }}>Деталізація розрахунку відстаней</h3>
+            <div className="table-wrap" style={{ overflowX: 'auto' }}>
+              <table style={{ borderCollapse: 'collapse', fontSize: '0.75rem', minWidth: 'max-content' }}>
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: 'left', borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', paddingBottom: '8px' }}>
+                      Компроміс<br/><span style={{color: 'var(--teal)'}}>(Ранги)</span>
+                    </th>
+                    {satisfaction.indices.map(idx => (
+                      <th key={idx.expertIndex} style={{ padding: '6px', textAlign: 'center', borderBottom: '2px solid var(--border-color)', color: 'var(--accent)' }}>
+                        {idx.expertIndex}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {rowObjects.map(objName => {
+                    const cRank = chosenRanking.indexOf(objName);
+                    const label = cRank !== -1 ? `${cRank + 1} (${objName})` : `- (${objName})`;
+                    return (
+                      <tr key={objName}>
+                        <td style={{ fontWeight: 600, padding: '6px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{label}</td>
+                        {satisfaction.indices.map(idx => {
+                          const detail = idx.details.find(d => d.objectName === objName);
+                          let valStr = '';
+                          if (detail) {
+                            valStr = detail.diff;
+                          }
+                          return (
+                            <td key={idx.expertIndex} style={{ textAlign: 'center', padding: '6px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: detail?.penalty ? '#cf6679' : 'var(--text-primary)' }}>
+                              {valStr}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                  <tr style={{ background: 'rgba(255,255,255,0.02)' }}>
+                    <td style={{ fontWeight: 600, padding: '8px 6px', borderTop: '2px solid var(--border-color)' }}>Сума (d)</td>
+                    {satisfaction.indices.map(idx => (
+                      <td key={idx.expertIndex} style={{ textAlign: 'center', padding: '8px 6px', borderTop: '2px solid var(--border-color)', fontWeight: 600 }}>
+                        {idx.distance}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr style={{ background: 'rgba(255,255,255,0.02)' }}>
+                    <td style={{ fontWeight: 600, padding: '8px 6px' }}>Відносна (d)</td>
+                    {satisfaction.indices.map(idx => (
+                      <td key={idx.expertIndex} style={{ textAlign: 'center', padding: '8px 6px', color: 'var(--text-muted)' }}>
+                        {(idx.distance / normalizedMaxD).toFixed(2)}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr style={{ background: 'rgba(255,255,255,0.02)' }}>
+                    <td style={{ fontWeight: 600, padding: '8px 6px' }}>Задоволеність</td>
+                    {satisfaction.indices.map(idx => {
+                      const color = idx.satisfaction > 70 ? 'var(--teal)' : idx.satisfaction > 40 ? '#ffc107' : '#cf6679';
+                      return (
+                        <td key={idx.expertIndex} style={{ textAlign: 'center', padding: '8px 6px', fontWeight: 700, color }}>
+                          {idx.satisfaction}%
+                        </td>
+                      );
+                    })}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* ===== SITUATION B ===== */}
       {activeTab === 'situationB' && (
