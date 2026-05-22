@@ -219,25 +219,35 @@ export default function AdminPage() {
 
       {results?.scores && results.scores.length > 0 ? (
         <div className="glass-card" style={{ padding: '24px', marginBottom: '32px' }}>
-          {results.scores.map((s, index) => (
+          {results.scores.map((s, index) => {
+            const isZeroScore = parseInt(s.total_score) === 0;
+            return (
             <div key={s.id} style={{
               display: 'flex',
               alignItems: 'center',
               gap: '16px',
               padding: '12px 0',
-              borderBottom: index < results.scores.length - 1 ? '1px solid var(--border-color)' : 'none'
+              borderBottom: index < results.scores.length - 1 ? '1px solid var(--border-color)' : 'none',
+              opacity: isZeroScore ? 0.6 : 1
             }}>
               <div style={{
                 minWidth: '32px',
                 textAlign: 'center',
                 fontWeight: 700,
-                fontSize: index < 3 ? '1.3rem' : '0.9rem',
-                color: index === 0 ? '#ffc107' : index === 1 ? '#c0c0c0' : index === 2 ? '#cd7f32' : 'var(--text-muted)'
+                fontSize: index < 3 && !isZeroScore ? '1.3rem' : '0.9rem',
+                color: index === 0 && !isZeroScore ? '#ffc107' : index === 1 && !isZeroScore ? '#c0c0c0' : index === 2 && !isZeroScore ? '#cd7f32' : 'var(--text-muted)'
               }}>
-                {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`}
+                {index === 0 && !isZeroScore ? '🥇' : index === 1 && !isZeroScore ? '🥈' : index === 2 && !isZeroScore ? '🥉' : `${index + 1}.`}
               </div>
-              <div style={{ flex: '0 0 180px', fontWeight: 500 }}>
-                {s.name}
+              <div style={{ flex: '0 0 180px', fontWeight: 500, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <span style={{ textDecoration: isZeroScore ? 'line-through' : 'none', color: isZeroScore ? 'var(--text-muted)' : 'inherit' }}>
+                  {s.name}
+                </span>
+                {isZeroScore && (
+                  <span style={{ color: '#cf6679', fontSize: '0.65rem', fontWeight: 600 }}>
+                    🚫 Вилучено евристикою
+                  </span>
+                )}
               </div>
               <div className="score-bar-container" style={{ flex: 1 }}>
                 <div className="score-bar">
@@ -245,7 +255,7 @@ export default function AdminPage() {
                     className="score-bar-fill"
                     style={{
                       width: `${maxScore > 0 ? (parseInt(s.total_score) / maxScore) * 100 : 0}%`,
-                      background: index < 3 ? 'var(--gradient-teal)' : 'var(--gradient-main)'
+                      background: index < 3 && !isZeroScore ? 'var(--gradient-teal)' : 'var(--gradient-main)'
                     }}
                   />
                 </div>
@@ -257,7 +267,7 @@ export default function AdminPage() {
                 <span className="badge badge-teal">🥉{s.third_place}</span>
               </div>
             </div>
-          ))}
+          )})}
         </div>
       ) : (
         <div className="glass-card empty-state">
