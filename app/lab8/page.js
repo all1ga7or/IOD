@@ -15,39 +15,42 @@ export default function Lab8Page() {
   });
 
   const handleParamChange = (field, value) => {
-    let val = Number(value);
-    // basic clamp for form safety
-    if (field === 'parallel' || field === 'a1' || field === 'a2') {
-      val = Math.max(0.01, Math.min(0.999, val));
-    }
-    setParams(prev => ({ ...prev, [field]: val }));
+    setParams(prev => ({ ...prev, [field]: value }));
   };
 
   const results = useMemo(() => {
-    const beta = 1 - params.parallel;
-    const s_max = beta > 0 ? 1 / beta : Infinity;
+    // Parse strings to numbers or fallbacks
+    const p = Number(params.parallel) || 0;
+    const s_given = Number(params.s_given) || 1;
+    const a1 = Number(params.a1) || 0;
+    const a2 = Number(params.a2) || 0;
+
+    // Constrain beta so we don't hit Infinity division
+    const safeParallel = Math.max(0.001, Math.min(0.999, p));
+    const beta = 1 - safeParallel;
+    const s_max = 1 / beta;
 
     // 1. Calculate Required Processors (l) for s_given
     let l_calc = null;
     let impossible = false;
-    const denom = 1 - params.s_given * beta;
+    const denom = 1 - s_given * beta;
     if (denom <= 0) {
       impossible = true;
     } else {
-      l_calc = (params.s_given * (1 - beta)) / denom;
+      l_calc = (s_given * (1 - beta)) / denom;
     }
 
     // 2. Calculate Processors for target ratios a1, a2
     const calcLForRatio = (a) => {
-      if (a >= 1.0) return Infinity;
+      if (a >= 1.0 || a <= 0) return Infinity; // Prevent NaN/Infinity issues if user clears field
       const l = (a / (1 - a)) * ((1 - beta) / beta);
       return Math.ceil(l);
     };
 
-    const l_a1 = calcLForRatio(params.a1);
-    const l_a2 = calcLForRatio(params.a2);
+    const l_a1 = calcLForRatio(a1);
+    const l_a2 = calcLForRatio(a2);
 
-    return { beta, s_max, l_calc, impossible, l_a1, l_a2 };
+    return { beta, s_max, l_calc, impossible, l_a1, l_a2, safeParallel };
   }, [params]);
 
   return (
