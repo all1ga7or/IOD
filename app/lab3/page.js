@@ -119,6 +119,81 @@ export default function Lab3ResultsPage() {
       csv += `Експертів: ${results.stats?.n_experts || 0}\n`;
       csv += `Кількість перестановок: ${results.stats?.total_permutations || 0}\n`;
       csv += `Мінімальна сума відстаней: ${results.bestSumD || 0}\n`;
+      csv += `Мінімальна максимальна відстань: ${results.bestMaxD || 0}\n`;
+
+      csv += '\n=== МАТРИЦЯ ПЕРЕВАГ ===\n';
+      if (results.objNames) {
+        csv += ',' + results.objNames.map(n => `"${n}"`).join(',') + '\n';
+      }
+      if (results.prefMatrix && results.objNames) {
+        results.prefMatrix.forEach((row, i) => {
+          csv += `"${results.objNames[i]}",` + row.join(',') + '\n';
+        });
+      }
+
+      csv += '\n=== БІНАРНА МАТРИЦЯ ===\n';
+      if (results.objNames) {
+        csv += ',' + results.objNames.map(n => `"${n}"`).join(',') + '\n';
+      }
+      if (results.binaryMatrix && results.objNames) {
+        results.binaryMatrix.forEach((row, i) => {
+          csv += `"${results.objNames[i]}",` + row.join(',') + '\n';
+        });
+      }
+
+      csv += '\n=== МАТРИЦЯ ПРОФІЛІВ (Частота рангів) ===\n';
+      if (results.objNames) {
+        csv += 'Ранг,' + results.objNames.map(n => `"${n}"`).join(',') + '\n';
+      }
+      if (results.rankFreqMatrix) {
+        results.rankFreqMatrix.forEach((row, i) => {
+          const rankLabel = i < 3 ? `${i + 1} місце` : 'Загалом';
+          csv += `"${rankLabel}",` + row.join(',') + '\n';
+        });
+      }
+
+      csv += '\n=== МЕДІАНИ КУКА (МІНІМУМ СУМИ) ===\n';
+      if (results.cookSumMedians) {
+        results.cookSumMedians.forEach((m, i) => {
+           csv += `Медіана #${i + 1},"${m.join(' → ')}"\n`;
+        });
+      }
+
+      csv += '\n=== МЕДІАНИ КУКА (МІНІМУМ МАКСИМУМУ) ===\n';
+      if (results.cookMaxMedians) {
+        results.cookMaxMedians.forEach((m, i) => {
+           csv += `Медіана #${i + 1},"${m.join(' → ')}"\n`;
+        });
+      }
+
+      csv += '\n=== ЕВРИСТИКА Е1 (Поміркована взаємність) ===\n';
+      csv += 'Місце,Об\'єкт\n';
+      if (results.e1Ranking) {
+        results.e1Ranking.forEach((name, i) => csv += `${i+1},"${name}"\n`);
+      }
+
+      csv += '\n=== ЕВРИСТИКА Е2 (Максимальне задоволення) ===\n';
+      csv += 'Місце,Об\'єкт\n';
+      if (results.e2Ranking) {
+        results.e2Ranking.forEach((name, i) => csv += `${i+1},"${name}"\n`);
+      }
+
+      csv += '\n=== ЕВОЛЮЦІЙНИЙ АЛГОРИТМ (GA) ===\n';
+      csv += `Кращий Fitness (відстань Кука): ${results.gaResult?.bestFit || 0}\n`;
+      csv += `Розрив з оптимумом (Gap): ${results.gaResult?.gap || 0}\n`;
+      csv += 'Генерація,Fitness\n';
+      if (results.gaResult && results.gaResult.log) {
+        results.gaResult.log.forEach(l => csv += `${l.generation},${l.bestFitness}\n`);
+      }
+
+      csv += '\n=== МАСШТАБУВАННЯ ===\n';
+      csv += 'Об\'єктів (n),Експертів (k),Час (мс),GA Fitness,Примітка\n';
+      if (results.scalingResults) {
+        results.scalingResults.forEach(r => {
+          csv += `${r.nObjects},${r.nExperts},${r.elapsedMs},${r.gaBestFit},"${r.note}"\n`;
+        });
+      }
+
 
       content = csv;
       mime = 'text/csv;charset=utf-8;';
