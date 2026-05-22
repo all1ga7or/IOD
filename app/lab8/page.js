@@ -21,9 +21,20 @@ export default function Lab8Page() {
   const results = useMemo(() => {
     // Parse strings to numbers or fallbacks
     const p = Number(params.parallel) || 0;
-    const s_given = Number(params.s_given) || 1;
-    const a1 = Number(params.a1) || 0;
-    const a2 = Number(params.a2) || 0;
+    const s_given = Number(params.s_given);
+    const a1 = Number(params.a1);
+    const a2 = Number(params.a2);
+
+    const errors = {};
+    if (params.s_given !== '' && (isNaN(s_given) || s_given <= 1)) {
+      errors.s_given = "Прискорення має бути > 1";
+    }
+    if (params.a1 !== '' && (isNaN(a1) || a1 <= 0 || a1 >= 1)) {
+      errors.a1 = "Має бути в межах 0.01 - 0.99";
+    }
+    if (params.a2 !== '' && (isNaN(a2) || a2 <= 0 || a2 >= 1)) {
+      errors.a2 = "Має бути в межах 0.01 - 0.99";
+    }
 
     // Constrain beta so we don't hit Infinity division
     const safeParallel = Math.max(0.001, Math.min(0.999, p));
@@ -50,7 +61,7 @@ export default function Lab8Page() {
     const l_a1 = calcLForRatio(a1);
     const l_a2 = calcLForRatio(a2);
 
-    return { beta, s_max, l_calc, impossible, l_a1, l_a2, safeParallel };
+    return { beta, s_max, l_calc, impossible, l_a1, l_a2, safeParallel, errors };
   }, [params]);
 
   return (
@@ -97,7 +108,9 @@ export default function Lab8Page() {
               value={params.s_given} 
               onChange={(e) => handleParamChange('s_given', e.target.value)} 
               min="1" step="0.5"
+              style={{ borderColor: results.errors.s_given ? '#cf6679' : 'var(--border-color)', outline: 'none' }}
             />
+            {results.errors.s_given && <div style={{ color: '#cf6679', fontSize: '0.75rem', marginTop: '4px' }}>{results.errors.s_given}</div>}
           </div>
 
           <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
@@ -109,7 +122,9 @@ export default function Lab8Page() {
                 value={params.a1} 
                 onChange={(e) => handleParamChange('a1', e.target.value)} 
                 min="0.01" max="0.99" step="0.05"
+                style={{ borderColor: results.errors.a1 ? '#cf6679' : 'var(--border-color)', outline: 'none' }}
               />
+              {results.errors.a1 && <div style={{ color: '#cf6679', fontSize: '0.75rem', marginTop: '4px' }}>{results.errors.a1}</div>}
             </div>
             <div className="form-group" style={{ flex: 1 }}>
               <label className="form-label">Межа 2 (a₂):</label>
@@ -119,7 +134,9 @@ export default function Lab8Page() {
                 value={params.a2} 
                 onChange={(e) => handleParamChange('a2', e.target.value)} 
                 min="0.01" max="0.99" step="0.05"
+                style={{ borderColor: results.errors.a2 ? '#cf6679' : 'var(--border-color)', outline: 'none' }}
               />
+              {results.errors.a2 && <div style={{ color: '#cf6679', fontSize: '0.75rem', marginTop: '4px' }}>{results.errors.a2}</div>}
             </div>
           </div>
         </div>
