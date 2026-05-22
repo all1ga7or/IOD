@@ -60,6 +60,17 @@ export default function MenuPage() {
       path: '/lab5',
       gradient: 'linear-gradient(135deg, #ff4081 0%, #d50000 100%)',
       glow: 'rgba(255, 64, 129, 0.2)'
+    },
+    {
+      id: 'lab6',
+      icon: '🚀',
+      title: 'Лабораторна робота №6',
+      subtitle: 'Характеристики систем (продовження)',
+      description: 'Додатковий аналіз: обчислення загальної завантаженості системи (ρ) та прискорення (S). Вирівнювання несумісностей "донизу" та "догори".',
+      details: 'Прискорення S • Завантаженість ρ • ФП=1',
+      path: '/lab6',
+      gradient: 'linear-gradient(135deg, #651fff 0%, #3d5afe 100%)',
+      glow: 'rgba(101, 31, 255, 0.2)'
     }
   ];
 
