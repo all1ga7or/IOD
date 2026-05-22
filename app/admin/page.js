@@ -63,8 +63,8 @@ export default function AdminPage() {
 
     // Протокол
     let csv = 'Експерт,1 Місце,2 Місце,3 Місце,Дата\n';
-    results.protocol.forEach(v => {
-      csv += `"${v.expert_name}","${v.rank1_name}","${v.rank2_name}","${v.rank3_name}","${v.created_at}"\n`;
+    results.protocol.forEach((v, index) => {
+      csv += `"Експерт ${index + 1}","${v.rank1_name}","${v.rank2_name}","${v.rank3_name}","${v.created_at}"\n`;
     });
 
     csv += '\n\nОб\'єкт,Бали,1 місце,2 місце,3 місце,Загальних згадувань\n';
@@ -289,7 +289,7 @@ export default function AdminPage() {
               {results.protocol.map((vote, index) => (
                 <tr key={index}>
                   <td style={{ color: 'var(--text-muted)' }}>{index + 1}</td>
-                  <td><strong>{vote.expert_name}</strong></td>
+                  <td><strong>Експерт {index + 1}</strong></td>
                   <td>
                     <span className="badge badge-gold">{vote.rank1_name}</span>
                   </td>
