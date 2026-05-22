@@ -94,7 +94,7 @@ export default function Lab3ResultsPage() {
       csv += 'Експерт,Об\'єкт 1,Об\'єкт 2,Об\'єкт 3\n';
       if (results.inputSummary && results.inputSummary.surveyData) {
         results.inputSummary.surveyData.forEach(v => {
-          csv += `"${v.expertName}","${v.picks[0]?.objectName||''}","${v.picks[1]?.objectName||''}","${v.picks[2]?.objectName||''}"\n`;
+          csv += `"${v.expert}","${v.picks[0]?.name||''}","${v.picks[1]?.name||''}","${v.picks[2]?.name||''}"\n`;
         });
       }
 
@@ -169,13 +169,13 @@ export default function Lab3ResultsPage() {
       csv += '\n=== ЕВРИСТИКА Е1 (Поміркована взаємність) ===\n';
       csv += 'Місце,Об\'єкт\n';
       if (results.e1Ranking) {
-        results.e1Ranking.forEach((name, i) => csv += `${i+1},"${name}"\n`);
+        results.e1Ranking.forEach((obj, i) => csv += `${i+1},"${obj.name || obj}"\n`);
       }
 
       csv += '\n=== ЕВРИСТИКА Е2 (Максимальне задоволення) ===\n';
       csv += 'Місце,Об\'єкт\n';
       if (results.e2Ranking) {
-        results.e2Ranking.forEach((name, i) => csv += `${i+1},"${name}"\n`);
+        results.e2Ranking.forEach((obj, i) => csv += `${i+1},"${obj.name || obj}"\n`);
       }
 
       csv += '\n=== ЕВОЛЮЦІЙНИЙ АЛГОРИТМ (GA) ===\n';
