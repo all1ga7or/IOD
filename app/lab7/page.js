@@ -67,34 +67,34 @@ export default function Lab7Page() {
         {/* Param Inputs */}
         <div className="glass-card" style={{ flex: '1 1 300px' }}>
           <h2 className="section-title" style={{ marginTop: 0 }}>Параметри алгоритму</h2>
-          
+
           <div className="form-group">
             <label className="form-label">Загальна кількість операцій (N):</label>
-            <input 
-              type="number" 
-              className="input" 
-              value={params.N} 
-              onChange={(e) => handleParamChange('N', e.target.value)} 
+            <input
+              type="number"
+              className="input"
+              value={params.N}
+              onChange={(e) => handleParamChange('N', e.target.value)}
               min={safeNseq}
             />
           </div>
           <div className="form-group">
             <label className="form-label">Послідовних операцій (критичний шлях, n):</label>
-            <input 
-              type="number" 
-              className="input" 
-              value={params.n} 
-              onChange={(e) => handleParamChange('n', e.target.value)} 
+            <input
+              type="number"
+              className="input"
+              value={params.n}
+              onChange={(e) => handleParamChange('n', e.target.value)}
               min="1" max={safeN}
             />
           </div>
           <div className="form-group">
             <label className="form-label">Кількість процесорів (ширина алгоритму, s):</label>
-            <input 
-              type="number" 
-              className="input" 
-              value={params.s} 
-              onChange={(e) => handleParamChange('s', e.target.value)} 
+            <input
+              type="number"
+              className="input"
+              value={params.s}
+              onChange={(e) => handleParamChange('s', e.target.value)}
               min="1"
             />
           </div>
@@ -140,11 +140,11 @@ export default function Lab7Page() {
 
           <div className="glass-card" style={{ padding: '24px', overflowX: 'auto', textAlign: 'center', transition: 'var(--transition)' }}>
             <h2 className="section-title" style={{ marginTop: 0 }}>
-              {isVariant15 ? 'Граф алгоритму (Рисунок 5, В-15)' : 'Динамічно згенерований алгоритм'}
+              {isVariant15 ? 'Граф алгоритму (Рисунок 5, В-15)' : 'Граф алгоритму'}
             </h2>
             <GraphSVG N={safeN} n={safeNseq} s={safeS} isVariant15={isVariant15} />
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '16px' }}>
-              {isVariant15 
+              {isVariant15
                 ? `Червоним виділено одну з гілок критичного шляху (n = ${safeNseq}). Ширина графа: s = ${safeS}.`
                 : `Автоматична генерація графа: N=${safeN}, критичний шлях n=${safeNseq}, ширина s=${safeS}.`
               }
@@ -189,12 +189,12 @@ function GraphSVG({ N, n, s, isVariant15 }) {
     // ----------------------------------------------------
     const dynTiers = {};
     for (let i = 1; i <= n; i++) dynTiers[i] = [i];
-    
+
     let remaining = N - n;
     let currNode = n + 1;
     let targetTiers = [];
     if (n > 2) {
-      for(let i = 2; i < n; i++) targetTiers.push(i);
+      for (let i = 2; i < n; i++) targetTiers.push(i);
     } else if (n > 1) {
       targetTiers = [1, n];
     } else {
@@ -219,7 +219,7 @@ function GraphSVG({ N, n, s, isVariant15 }) {
     const dynEdges = [];
     // Critical pathway connecting sequential steps
     for (let i = 1; i < n; i++) dynEdges.push([i, i + 1]);
-    
+
     // Connect broad algorithm nodes to previous/next tier leader
     for (let tStr in dynTiers) {
       const t = parseInt(tStr);
@@ -242,15 +242,15 @@ function GraphSVG({ N, n, s, isVariant15 }) {
     const baseY = 30;
 
     for (let tStr in dynTiers) {
-        const t = parseInt(tStr);
-        const nodes = dynTiers[t];
-        const tierY = baseY + (t - 1) * ySpacing;
-        
-        let startX = 300 - ((nodes.length - 1) * xSpacing) / 2;
-        
-        nodes.forEach((node, idx) => {
-            dynNodePos[node] = { x: startX + idx * xSpacing, y: tierY };
-        });
+      const t = parseInt(tStr);
+      const nodes = dynTiers[t];
+      const tierY = baseY + (t - 1) * ySpacing;
+
+      let startX = 300 - ((nodes.length - 1) * xSpacing) / 2;
+
+      nodes.forEach((node, idx) => {
+        dynNodePos[node] = { x: startX + idx * xSpacing, y: tierY };
+      });
     }
 
     return { edges: dynEdges, criticalPath: dynCrit, nodePositions: dynNodePos, maxTiers: n };
@@ -274,24 +274,24 @@ function GraphSVG({ N, n, s, isVariant15 }) {
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
         </defs>
-        
+
         {/* Draw edges with subtle enter animations */}
         <g strokeLinecap="round" strokeLinejoin="round">
           {edges.map(([u, v], i) => {
             const uPos = nodePositions[u];
             const vPos = nodePositions[v];
             if (!uPos || !vPos) return null;
-            
+
             const uIndex = criticalPath.indexOf(u);
             const isCritical = uIndex !== -1 && criticalPath[uIndex + 1] === v;
-            
+
             return (
-              <line 
+              <line
                 key={`edge-${isVariant15 ? 'var15' : 'dyn'}-${u}-${v}`}
-                x1={uPos.x} y1={uPos.y} 
-                x2={vPos.x} y2={vPos.y} 
-                stroke={isCritical ? "#ff4081" : "rgba(255, 255, 255, 0.15)"} 
-                strokeWidth={isCritical ? "3" : "2"} 
+                x1={uPos.x} y1={uPos.y}
+                x2={vPos.x} y2={vPos.y}
+                stroke={isCritical ? "#ff4081" : "rgba(255, 255, 255, 0.15)"}
+                strokeWidth={isCritical ? "3" : "2"}
                 markerEnd={isCritical ? "url(#arrowheadCrit)" : "url(#arrowhead)"}
                 style={{
                   transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
@@ -306,22 +306,22 @@ function GraphSVG({ N, n, s, isVariant15 }) {
           const id = parseInt(idStr);
           const pos = nodePositions[id];
           const isCritical = criticalPath.includes(id);
-          
+
           return (
-            <g 
-              key={`node-${isVariant15 ? 'var15' : 'dyn'}-${id}`} 
+            <g
+              key={`node-${isVariant15 ? 'var15' : 'dyn'}-${id}`}
               style={{
                 transform: `translate(${pos.x}px, ${pos.y}px)`,
                 transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
               }}
             >
               {isCritical && (
-                <circle r="16" fill="transparent" stroke="#ff4081" strokeWidth="3" filter="url(#glowCrit)" opacity="0.6"/>
+                <circle r="16" fill="transparent" stroke="#ff4081" strokeWidth="3" filter="url(#glowCrit)" opacity="0.6" />
               )}
-              <circle 
-                r="14" 
-                fill={isCritical ? '#ff1744' : '#1e1e2d'} 
-                stroke={isCritical ? '#ff8a80' : '#8888a0'} 
+              <circle
+                r="14"
+                fill={isCritical ? '#ff1744' : '#1e1e2d'}
+                stroke={isCritical ? '#ff8a80' : '#8888a0'}
                 strokeWidth="2"
                 style={{ transition: 'fill 0.3s, stroke 0.3s' }}
               />

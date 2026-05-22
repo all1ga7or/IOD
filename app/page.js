@@ -82,6 +82,17 @@ export default function MenuPage() {
       path: '/lab7',
       gradient: 'linear-gradient(135deg, #ff9100 0%, #ff3d00 100%)',
       glow: 'rgba(255, 145, 0, 0.2)'
+    },
+    {
+      id: 'lab8',
+      icon: '📈',
+      title: 'Лабораторна робота №8',
+      subtitle: 'Аналіз вимог до кількості процесорів',
+      description: 'Визначення необхідної кількості процесорів (l) для досягнення заданого прискорення S та цільового відсотку від максимально можливого прискорення S_max.',
+      details: 'Обернений з-н Амдала • Аналіз S_max',
+      path: '/lab8',
+      gradient: 'linear-gradient(135deg, #00b0ff 0%, #00e5ff 100%)',
+      glow: 'rgba(0, 176, 255, 0.2)'
     }
   ];
 
