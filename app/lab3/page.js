@@ -77,6 +77,63 @@ export default function Lab3ResultsPage() {
     }
   }, [password]);
 
+  const downloadProtocol = (format) => {
+    if (!results) return;
+    let content, mime, ext;
+
+    if (format === 'json') {
+      content = JSON.stringify(results, null, 2);
+      mime = 'application/json';
+      ext = 'json';
+    } else {
+      let csv = '\ufeff'; // BOM for Excel
+      csv += 'ПРОТОКОЛ ЛАБОРАТОРНОЇ РОБОТИ №3\n';
+      csv += 'Пошук компромісного ранжування (Кількісний аналіз)\n\n';
+
+      csv += '=== ВХІДНІ ДАНІ (МНОЖИННІ ПОРІВНЯННЯ) ===\n';
+      csv += 'Експерт,Об\'єкт 1,Об\'єкт 2,Об\'єкт 3\n';
+      if (results.inputSummary && results.inputSummary.surveyData) {
+        results.inputSummary.surveyData.forEach(v => {
+          csv += `"${v.expertName}","${v.picks[0]?.objectName||''}","${v.picks[1]?.objectName||''}","${v.picks[2]?.objectName||''}"\n`;
+        });
+      }
+
+      csv += '\n=== СТАТИСТИКА ОБ\'ЄКТІВ (КАНДИДАТИ) ===\n';
+      csv += 'Об\'єкт,Згадувань,Голосів за 1м,Голосів за 2м,Голосів за 3м\n';
+      if (results.inputSummary && results.inputSummary.candidateObjects) {
+        results.inputSummary.candidateObjects.forEach(obj => {
+          csv += `"${obj.name}",${obj.mentions},${obj.rankCounts[1]||0},${obj.rankCounts[2]||0},${obj.rankCounts[3]||0}\n`;
+        });
+      }
+
+      csv += '\n=== ФІНАЛЬНЕ РАНЖУВАННЯ (Медіана Кука - Сума) ===\n';
+      csv += 'Місце,Об\'єкт\n';
+      if (results.finalRanking) {
+        results.finalRanking.forEach((name, i) => {
+          csv += `${i+1},"${name}"\n`;
+        });
+      }
+
+      csv += '\n=== СТАТИСТИКА РОЗРАХУНКУ ===\n';
+      csv += `Об'єктів: ${results.stats?.n_objects || 0}\n`;
+      csv += `Експертів: ${results.stats?.n_experts || 0}\n`;
+      csv += `Кількість перестановок: ${results.stats?.total_permutations || 0}\n`;
+      csv += `Мінімальна сума відстаней: ${results.bestSumD || 0}\n`;
+
+      content = csv;
+      mime = 'text/csv;charset=utf-8;';
+      ext = 'csv';
+    }
+
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `lab3_protocol.${ext}`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     await fetchResults(password);
@@ -141,7 +198,8 @@ export default function Lab3ResultsPage() {
     { id: 'medians', label: '🏆 Медіани Кука' },
     { id: 'heuristics', label: '🔧 Евристики' },
     { id: 'ga', label: '🧬 Алгоритм GA' },
-    { id: 'scaling', label: '📈 Масштаб' }
+    { id: 'scaling', label: '📈 Масштаб' },
+    { id: 'protocol', label: '📥 Протокол' }
   ];
 
   const prefColorFn = (val, i, j) => {
@@ -652,6 +710,70 @@ export default function Lab3ResultsPage() {
               <li>Для <strong>n≥50</strong>: лише GA та інші метаевристики є практичними.</li>
               <li>Час GA зростає поліноміально з n і k, тоді як брутфорс — факторіально.</li>
             </ul>
+          </div>
+        </div>
+      )}
+
+      {/* ==================== TAB: PROTOCOL DOWNLOAD ==================== */}
+      {activeTab === 'protocol' && (
+        <div className="animate-fade">
+          <h2 className="section-title">📥 Протокол обчислень</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '24px' }}>
+            Завантажте детальний протокол з вхідними даними, матрицями та результатами ранжування за критерієм Кука.
+          </p>
+
+          <div className="glass-card" style={{ padding: '24px', marginBottom: '24px' }}>
+            <h3 style={{ fontSize: '1rem', color: 'var(--accent)', marginBottom: '16px' }}>📄 Вміст протоколу</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.88rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>✅</span> <span>Вхідні дані (експертні множинні порівняння)</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>✅</span> <span>Статистика об&apos;єктів-кандидатів</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>✅</span> <span>Фінальне колективне ранжування (медіана Кука)</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>✅</span> <span>Загальна статистика виконання (час, перестановок)</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="download-area" style={{ display: 'flex', gap: '12px' }}>
+            <button onClick={() => downloadProtocol('csv')} className="btn btn-primary btn-sm">
+              📥 Завантажити CSV
+            </button>
+            <button onClick={() => downloadProtocol('json')} className="btn btn-secondary btn-sm">
+              📥 Завантажити JSON
+            </button>
+          </div>
+
+          <h3 className="section-title" style={{ fontSize: '1rem', marginTop: '32px' }}>📊 Зведена таблиця</h3>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Параметр</th>
+                  <th>Значення</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ['Кількість об\'єктів-кандидатів (n)', stats.n_objects],
+                  ['Кількість експертів (k)', stats.n_experts],
+                  ['Кількість проаналізованих перестановок', stats.total_permutations?.toLocaleString?.()],
+                  ['Мінімальна знайдена сума відстаней (D)', bestSumD],
+                  ['Алгоритм фінального ранжування', 'Повний перебір O(n!)'],
+                  ['Значення fitness еволюційного алгоритму', gaResult?.bestFit]
+                ].map(([param, value], i) => (
+                  <tr key={i}>
+                    <td style={{ fontWeight: 500 }}>{param}</td>
+                    <td><strong style={{ color: 'var(--teal)' }}>{value}</strong></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
