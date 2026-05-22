@@ -53,6 +53,67 @@ export default function Lab4ResultsPage() {
     }
   }, [password]);
 
+  const downloadProtocol = (format) => {
+    if (!results) return;
+    let content, mime, ext;
+
+    if (format === 'json') {
+      content = JSON.stringify(results, null, 2);
+      mime = 'application/json';
+      ext = 'json';
+    } else {
+      let csv = '\ufeff'; // BOM for Excel
+      csv += 'ПРОТОКОЛ ЛАБОРАТОРНОЇ РОБОТИ №4\n';
+      csv += 'Розподілені обчислення та аналіз задоволеності\n\n';
+
+      csv += '\n=== СТАТИСТИКА РОЗРАХУНКУ ===\n';
+      csv += `Об'єктів: ${results.stats?.n_objects || 0}\n`;
+      csv += `Експертів: ${results.stats?.n_experts || 0}\n`;
+      csv += `Кількість перестановок (розподілено): ${results.stats?.total_permutations || 0}\n`;
+      csv += `Воркерів: ${results.stats?.distributed_workers || 0}\n`;
+      csv += `Загальний час розподіленого перебору: ${results.distributedBF?.totalElapsedMs || 0} мс\n`;
+      csv += `Мінімальна сума відстаней (Мін Кука): ${results.distributedBF?.globalBestSumD || 0}\n`;
+      csv += `Середня задоволеність експертів: ${results.stats?.avg_satisfaction || 0}%\n`;
+
+      csv += '\n=== ФІНАЛЬНЕ КОМПРОМІСНЕ РАНЖУВАННЯ (ЗЛИТТЯ) ===\n';
+      csv += 'Місце,Об\'єкт\n';
+      if (results.chosenRanking) {
+        results.chosenRanking.forEach((name, i) => {
+          csv += `${i+1},"${name}"\n`;
+        });
+      }
+
+      csv += '\n=== ВІДСТАНІ ТА ЗАДОВОЛЕНІСТЬ ЕКСПЕРТІВ ===\n';
+      csv += 'Експерт,Відстань (d),Задоволеність (s)\n';
+      if (results.satisfaction && results.satisfaction.indices) {
+        results.satisfaction.indices.forEach(idx => {
+          csv += `"${idx.expertName}",${idx.distance},${idx.satisfaction}%\n`;
+        });
+      }
+
+      csv += '\n=== СИТУАЦІЯ Б: ЦЕНТРАЛІЗОВАНО VS РОЗПОДІЛЕНО (Метаевристики) ===\n';
+      csv += 'Сценарій (n/k),Прискорення,Час (Центр),Час (Розподіл),Топ (Центр),Топ (Розподіл)\n';
+      if (results.situationB) {
+        results.situationB.forEach(sim => {
+          const comp = sim.comparison;
+          csv += `"n=${sim.params.nObjects} k=${sim.params.nExperts}","x${comp.speedup}",${comp.centralizedTime},${comp.distributedTime},"${sim.centralized.ranking.slice(0,3).join(',')}...","${sim.distributed.refinedRanking.slice(0,3).join(',')}..."\n`;
+        });
+      }
+
+      content = csv;
+      mime = 'text/csv;charset=utf-8;';
+      ext = 'csv';
+    }
+
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `lab4_protocol.${ext}`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     await fetchResults(password);
@@ -110,7 +171,8 @@ export default function Lab4ResultsPage() {
   const tabs = [
     { id: 'distributed', label: '⛓️ Розподілений брутфорс' },
     { id: 'satisfaction', label: '😊 Задоволеність експертів' },
-    { id: 'situationB', label: '🎲 Ситуація Б (n>>12)' }
+    { id: 'situationB', label: '🎲 Ситуація Б (n>>12)' },
+    { id: 'protocol', label: '📥 Протокол' }
   ];
 
   return (
@@ -380,6 +442,70 @@ export default function Lab4ResultsPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* ==================== TAB: PROTOCOL DOWNLOAD ==================== */}
+      {activeTab === 'protocol' && (
+        <div className="animate-fade">
+          <h2 className="section-title">📥 Протокол обчислень</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '24px' }}>
+            Завантажте детальний протокол з даними розподіленого брутфорсу, індексами задоволеності та Ситуацією Б.
+          </p>
+
+          <div className="glass-card" style={{ padding: '24px', marginBottom: '24px' }}>
+            <h3 style={{ fontSize: '1rem', color: 'var(--accent)', marginBottom: '16px' }}>📄 Вміст протоколу</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.88rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>✅</span> <span>Загальна статистика виконання (час, воркери, перестановок)</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>✅</span> <span>Фінальне компромісне ранжування (злиття)</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>✅</span> <span>Перелік відстаней та задоволеності по експертах</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>✅</span> <span>Порівняльна таблиця для Ситуації Б</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="download-area" style={{ display: 'flex', gap: '12px' }}>
+            <button onClick={() => downloadProtocol('csv')} className="btn btn-primary btn-sm">
+              📥 Завантажити CSV
+            </button>
+            <button onClick={() => downloadProtocol('json')} className="btn btn-secondary btn-sm">
+              📥 Завантажити JSON
+            </button>
+          </div>
+
+          <h3 className="section-title" style={{ fontSize: '1rem', marginTop: '32px' }}>📊 Зведена таблиця</h3>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Параметр</th>
+                  <th>Значення</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ['Кількість об\'єктів-кандидатів (n)', stats.n_objects],
+                  ['Кількість експертів (k)', stats.n_experts],
+                  ['Задіяна кількість Node-воркерів', stats.distributed_workers],
+                  ['Оброблено перестановок (розподілено)', stats.total_permutations?.toLocaleString?.()],
+                  ['Загальний час (розподілений O(n!/k))', `${distributedBF?.totalElapsedMs} мс`],
+                  ['Середня задоволеність експертів', `${stats.avg_satisfaction}%`]
+                ].map(([param, value], i) => (
+                  <tr key={i}>
+                    <td style={{ fontWeight: 500 }}>{param}</td>
+                    <td><strong style={{ color: 'var(--teal)' }}>{value}</strong></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
