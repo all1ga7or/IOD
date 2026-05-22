@@ -71,6 +71,17 @@ export default function MenuPage() {
       path: '/lab6',
       gradient: 'linear-gradient(135deg, #651fff 0%, #3d5afe 100%)',
       glow: 'rgba(101, 31, 255, 0.2)'
+    },
+    {
+      id: 'lab7',
+      icon: '⏱️',
+      title: 'Лабораторна робота №7',
+      subtitle: 'Максимальне прискорення і ефективність',
+      description: 'Розрахунок прискорення, ефективності та граничного прискорення за законами Амдала для алгоритму заданої ширини (s) та кількості операцій (N, n).',
+      details: 'Закони Амдала • N=20 • R_max',
+      path: '/lab7',
+      gradient: 'linear-gradient(135deg, #ff9100 0%, #ff3d00 100%)',
+      glow: 'rgba(255, 145, 0, 0.2)'
     }
   ];
 
