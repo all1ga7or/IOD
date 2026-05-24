@@ -7,7 +7,7 @@ export default function Lab7Page() {
   const router = useRouter();
 
   // Initial Parameters (Variant 15)
-  const initialParams = { N: 20, n: 10, s: 5 };
+  const initialParams = { N: 17, n: 8, s: 4 };
   const [params, setParams] = useState(initialParams);
 
   // Parse uploaded file (txt or JSON)
@@ -78,7 +78,7 @@ export default function Lab7Page() {
     setParams(prev => ({ ...prev, [field]: Number(value) }));
   };
 
-  const isVariant15 = safeN === 20 && safeNseq === 10 && safeS === 5;
+  const isVariant15 = safeN === 17 && safeNseq === 8 && safeS === 4;
 
   return (
     <div className="container" style={{ maxWidth: '1200px' }}>
@@ -94,13 +94,13 @@ export default function Lab7Page() {
             <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Аналіз паралельного алгоритму за шириною та критичним шляхом</span>
           </div>
         </div>
-        <div className="download-area" style={{ margin: 0, display: 'flex', gap: '12px' }}>
-          <label className="btn btn-secondary" style={{ cursor: 'pointer', padding: '8px 16px', display: 'flex', alignItems: 'center' }}>
+        <div className="download-area" style={{ margin: 0, display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <label className="btn btn-secondary btn-sm" style={{ cursor: 'pointer', padding: '8px 14px', borderRadius: 'var(--radius-sm)' }}>
             📂 З файлу
             <input type="file" accept=".txt,.json" onChange={handleFileUpload} style={{ display: 'none' }} />
           </label>
-          <button className="btn btn-secondary" onClick={resetVariant} style={{ padding: '8px 16px', borderColor: 'var(--accent)', color: 'var(--accent)' }}>
-            🔄 Скинути до Варіанту 15
+          <button className="btn btn-secondary btn-sm" onClick={resetVariant} style={{ padding: '8px 14px', borderColor: 'var(--accent)', color: 'var(--accent)', borderRadius: 'var(--radius-sm)' }}>
+            🔄 Скинути
           </button>
         </div>
       </div>
@@ -205,44 +205,46 @@ function GraphSVG({ N, n, s, isVariant15 }) {
     if (isVariant15) {
       // ----------------------------------------------------
       // EXACT TOPOLOGY FOR VARIANT 15 (Рисунок 5)
+      // Pattern: 1-1-4-1-1-4-4-1
       // ----------------------------------------------------
       const fixedEdges = [
-        [1, 2], [2, 3], [2, 4], [2, 5], [2, 6], [2, 7],
-        [3, 8], [7, 9], [4, 10], [5, 10], [6, 10], [8, 10], [9, 10],
-        [10, 11], [11, 12], [11, 13], [11, 14], [11, 15], [11, 16],
-        [12, 17], [16, 18], [13, 19], [14, 19], [15, 19], [17, 19], [18, 19],
-        [19, 20]
+        [1, 2],
+        [2, 3], [2, 4], [2, 5], [2, 6],
+        [3, 7], [4, 7], [5, 7], [6, 7],
+        [7, 8],
+        [8, 9], [8, 10], [8, 11], [8, 12],
+        [9, 13], [10, 14], [11, 15], [12, 16],
+        [13, 17], [14, 17], [15, 17], [16, 17]
       ];
-      const fixedCrit = [1, 2, 3, 8, 10, 11, 12, 17, 19, 20];
+      const fixedCrit = [1, 2, 3, 7, 8, 9, 13, 17];
       const fixedPos = {
-        1: { x: 40, y: 200 }, 
+        1: { x: 40, y: 200 },
         2: { x: 120, y: 200 },
         
-        3: { x: 200, y: 80 }, 
-        4: { x: 200, y: 140 }, 
-        5: { x: 200, y: 200 }, 
-        6: { x: 200, y: 260 }, 
-        7: { x: 200, y: 320 },
+        // Parallel group 1
+        3: { x: 200, y: 110 },
+        4: { x: 200, y: 170 },
+        5: { x: 200, y: 230 },
+        6: { x: 200, y: 290 },
         
-        8: { x: 280, y: 80 }, 
-        9: { x: 280, y: 320 },
+        7: { x: 280, y: 200 },
+        8: { x: 360, y: 200 },
         
-        10: { x: 360, y: 200 }, 
-        11: { x: 440, y: 200 },
+        // Parallel group 2 (stage a)
+        9: { x: 440, y: 110 },
+        10: { x: 440, y: 170 },
+        11: { x: 440, y: 230 },
+        12: { x: 440, y: 290 },
         
-        12: { x: 520, y: 80 }, 
-        13: { x: 520, y: 140 }, 
-        14: { x: 520, y: 200 }, 
-        15: { x: 520, y: 260 }, 
-        16: { x: 520, y: 320 },
+        // Parallel group 2 (stage b)
+        13: { x: 520, y: 110 },
+        14: { x: 520, y: 170 },
+        15: { x: 520, y: 230 },
+        16: { x: 520, y: 290 },
         
-        17: { x: 600, y: 80 }, 
-        18: { x: 600, y: 320 },
-        
-        19: { x: 680, y: 200 }, 
-        20: { x: 760, y: 200 },
+        17: { x: 600, y: 200 },
       };
-      return { edges: fixedEdges, criticalPath: fixedCrit, nodePositions: fixedPos, maxTiers: 10, maxNodesInTier: 5 };
+      return { edges: fixedEdges, criticalPath: fixedCrit, nodePositions: fixedPos, maxTiers: 8, maxNodesInTier: 4 };
     }
 
     // ----------------------------------------------------
