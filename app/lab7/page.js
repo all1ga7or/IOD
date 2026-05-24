@@ -10,6 +10,44 @@ export default function Lab7Page() {
   const initialParams = { N: 20, n: 10, s: 5 };
   const [params, setParams] = useState(initialParams);
 
+  // Parse uploaded file (txt or JSON)
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const text = evt.target.result;
+        if (file.name.endsWith('.json')) {
+          const data = JSON.parse(text);
+          setParams({
+            N: data.N || data.n_total || initialParams.N,
+            n: data.n || data.n_seq || initialParams.n,
+            s: data.s || initialParams.s
+          });
+        } else {
+          // Attempt generic text extraction (grab first 3 numbers from file)
+          const parts = text.trim().split(/[\s,=\n]+/);
+          const numbers = parts.map(p => Number(p)).filter(num => !isNaN(num) && num > 0);
+          if (numbers.length >= 3) {
+            setParams({
+              N: numbers[0],
+              n: numbers[1],
+              s: numbers[2]
+            });
+          } else {
+            alert("Файл повинен містити мінімум 3 числа (N, n, s)");
+          }
+        }
+      } catch (err) {
+        alert("Помилка читання файлу: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = null;
+  };
+
   // Dynamic constraints
   let safeN = params.N < 1 ? 1 : params.N;
   let safeNseq = params.n < 1 ? 1 : params.n;
@@ -56,7 +94,11 @@ export default function Lab7Page() {
             <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Аналіз паралельного алгоритму за шириною та критичним шляхом</span>
           </div>
         </div>
-        <div className="download-area" style={{ margin: 0 }}>
+        <div className="download-area" style={{ margin: 0, display: 'flex', gap: '12px' }}>
+          <label className="btn btn-secondary" style={{ cursor: 'pointer', padding: '8px 16px', display: 'flex', alignItems: 'center' }}>
+            📂 З файлу
+            <input type="file" accept=".txt,.json" onChange={handleFileUpload} style={{ display: 'none' }} />
+          </label>
           <button className="btn btn-secondary" onClick={resetVariant} style={{ padding: '8px 16px', borderColor: 'var(--accent)', color: 'var(--accent)' }}>
             🔄 Скинути до Варіанту 15
           </button>
@@ -173,15 +215,34 @@ function GraphSVG({ N, n, s, isVariant15 }) {
       ];
       const fixedCrit = [1, 2, 3, 8, 10, 11, 12, 17, 19, 20];
       const fixedPos = {
-        1: { x: 300, y: 30 }, 2: { x: 300, y: 100 },
-        3: { x: 100, y: 170 }, 4: { x: 200, y: 170 }, 5: { x: 300, y: 170 }, 6: { x: 400, y: 170 }, 7: { x: 500, y: 170 },
-        8: { x: 100, y: 240 }, 9: { x: 500, y: 240 },
-        10: { x: 300, y: 310 }, 11: { x: 300, y: 380 },
-        12: { x: 100, y: 450 }, 13: { x: 200, y: 450 }, 14: { x: 300, y: 450 }, 15: { x: 400, y: 450 }, 16: { x: 500, y: 450 },
-        17: { x: 100, y: 520 }, 18: { x: 500, y: 520 },
-        19: { x: 300, y: 590 }, 20: { x: 300, y: 660 },
+        1: { x: 40, y: 200 }, 
+        2: { x: 120, y: 200 },
+        
+        3: { x: 200, y: 80 }, 
+        4: { x: 200, y: 140 }, 
+        5: { x: 200, y: 200 }, 
+        6: { x: 200, y: 260 }, 
+        7: { x: 200, y: 320 },
+        
+        8: { x: 280, y: 80 }, 
+        9: { x: 280, y: 320 },
+        
+        10: { x: 360, y: 200 }, 
+        11: { x: 440, y: 200 },
+        
+        12: { x: 520, y: 80 }, 
+        13: { x: 520, y: 140 }, 
+        14: { x: 520, y: 200 }, 
+        15: { x: 520, y: 260 }, 
+        16: { x: 520, y: 320 },
+        
+        17: { x: 600, y: 80 }, 
+        18: { x: 600, y: 320 },
+        
+        19: { x: 680, y: 200 }, 
+        20: { x: 760, y: 200 },
       };
-      return { edges: fixedEdges, criticalPath: fixedCrit, nodePositions: fixedPos, maxTiers: 10 };
+      return { edges: fixedEdges, criticalPath: fixedCrit, nodePositions: fixedPos, maxTiers: 10, maxNodesInTier: 5 };
     }
 
     // ----------------------------------------------------
@@ -235,39 +296,43 @@ function GraphSVG({ N, n, s, isVariant15 }) {
     const dynCrit = [];
     for (let i = 1; i <= n; i++) dynCrit.push(i);
 
-    // Dynamic coordinates 
+    // Dynamic coordinates (Horizontal)
     const dynNodePos = {};
-    const ySpacing = 70;
     const xSpacing = 80;
-    const baseY = 30;
+    const ySpacing = 60;
+    const baseX = 40;
+
+    let maxNodesInTier = 1;
 
     for (let tStr in dynTiers) {
       const t = parseInt(tStr);
       const nodes = dynTiers[t];
-      const tierY = baseY + (t - 1) * ySpacing;
-
-      let startX = 300 - ((nodes.length - 1) * xSpacing) / 2;
-
+      if (nodes.length > maxNodesInTier) maxNodesInTier = nodes.length;
+      const tierX = baseX + (t - 1) * xSpacing;
+      
+      let startY = 200 - ((nodes.length - 1) * ySpacing) / 2;
+      
       nodes.forEach((node, idx) => {
-        dynNodePos[node] = { x: startX + idx * xSpacing, y: tierY };
+        dynNodePos[node] = { x: tierX, y: startY + idx * ySpacing };
       });
     }
 
-    return { edges: dynEdges, criticalPath: dynCrit, nodePositions: dynNodePos, maxTiers: n };
+    return { edges: dynEdges, criticalPath: dynCrit, nodePositions: dynNodePos, maxTiers: n, maxNodesInTier };
   }, [N, n, s, isVariant15]);
 
-  // Max SVG height depending on dynamically generated tiers
-  const svgHeight = maxTiers > 0 ? (maxTiers * 70 + 40) : 500;
+  // ViewBox bounds for horizontal graph
+  const svgWidth = Math.max(500, maxTiers * 80 + 40);
+  const svgHeight = Math.max(400, maxNodesInTier * 60 + 80);
 
   return (
-    <div style={{ transition: 'all 0.5s ease-out', minHeight: '400px' }}>
-      <svg width="100%" viewBox={`0 0 600 ${svgHeight}`} style={{ maxWidth: '500px', margin: '0 auto', display: 'block', transition: 'viewBox 0.5s ease-out' }}>
+    <div style={{ transition: 'all 0.5s ease-out', minHeight: '300px', display: 'flex', justifyContent: 'center' }}>
+      <svg width="100%" viewBox={`0 0 ${svgWidth} ${svgHeight}`} style={{ width: '100%', minWidth: '600px', maxWidth: '900px', display: 'block' }}>
         <defs>
-          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="24" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" fill="rgba(255, 255, 255, 0.2)" />
+          <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="22" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="rgba(255, 255, 255, 0.4)" />
           </marker>
-          <marker id="arrowheadCrit" markerWidth="10" markerHeight="7" refX="26" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" fill="#ff4081" />
+          <marker id="arrowheadCrit" markerWidth="8" markerHeight="6" refX="24" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#ff4081" />
           </marker>
           <filter id="glowCrit" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="5" result="blur" />
