@@ -201,7 +201,7 @@ export default function Lab7Page() {
 
 // SVG Visualization with smart dynamic rendering
 function GraphSVG({ N, n, s, isVariant15 }) {
-  const { edges, criticalPath, nodePositions, maxTiers } = useMemo(() => {
+  const { edges, criticalPath, nodePositions, maxTiers, maxNodesInTier } = useMemo(() => {
     if (isVariant15) {
       // ----------------------------------------------------
       // EXACT TOPOLOGY FOR VARIANT 15 (Рисунок 5)
