@@ -6,13 +6,56 @@ import { useRouter } from 'next/navigation';
 export default function Lab8Page() {
   const router = useRouter();
 
-  // Initial Parameters (Slight defaults for visual demonstration)
-  const [params, setParams] = useState({
-    parallel: 0.90, // 90% parallel (so beta = 0.1)
-    s_given: 6.5,   // target speedup
+  // Initial Parameters (Variant 15)
+  const initialParams = {
+    parallel: 0.65, // 65% parallel (so beta = 0.35)
+    s_given: 14,    // target speedup
     a1: 0.65,       // 65% of max
-    a2: 0.85        // 85% of max
-  });
+    a2: 0.90        // 90% of max
+  };
+
+  const [params, setParams] = useState(initialParams);
+
+  const resetVariant = () => setParams(initialParams);
+
+  // Parse uploaded file (txt or JSON)
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const text = evt.target.result;
+        // Try JSON format first
+        if (file.name.endsWith('.json')) {
+          const data = JSON.parse(text);
+          setParams({
+            parallel: data.parallel || initialParams.parallel,
+            s_given: data.s_given || initialParams.s_given,
+            a1: data.a1 || initialParams.a1,
+            a2: data.a2 || initialParams.a2
+          });
+        } else {
+          // Fallback to text parsing (space or comma separated)
+          const parts = text.trim().split(/[\s,]+/);
+          if (parts.length >= 4) {
+            setParams({
+              parallel: Number(parts[0]),
+              s_given: Number(parts[1]),
+              a1: Number(parts[2]),
+              a2: Number(parts[3])
+            });
+          }
+        }
+      } catch (err) {
+        alert("Помилка читання файлу: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+    // clear input
+    e.target.value = null;
+  };
 
   const handleParamChange = (field, value) => {
     setParams(prev => ({ ...prev, [field]: value }));
@@ -61,7 +104,27 @@ export default function Lab8Page() {
     const l_a1 = calcLForRatio(a1);
     const l_a2 = calcLForRatio(a2);
 
-    return { beta, s_max, l_calc, impossible, l_a1, l_a2, safeParallel, errors };
+    // 3. Develop Proposed Variant (Tasks 6, 7)
+    let altParallel;
+    let isOriginalCompatible = !impossible;
+    if (impossible) {
+      // Propose a COMPATIBLE variant by drastically increasing parallelism
+      // We need Smax > s_given => 1/beta > s_given => beta < 1/s_given
+      // Let's make Smax = s_given * 1.2 for safety
+      const targetBeta = 1 / (s_given * 1.2);
+      altParallel = 1 - targetBeta;
+    } else {
+      // Propose an INCOMPATIBLE variant by decreasing parallelism
+      // We need Smax < s_given => 1/beta < s_given => beta > 1/s_given
+      // Let's make Smax = s_given * 0.8
+      const targetBeta = 1 / (s_given * 0.8);
+      altParallel = 1 - targetBeta;
+    }
+    // Clamp
+    if (altParallel >= 1) altParallel = 0.99;
+    if (altParallel <= 0) altParallel = 0.01;
+
+    return { beta, s_max, l_calc, impossible, l_a1, l_a2, safeParallel, errors, altParallel, isOriginalCompatible };
   }, [params]);
 
   return (
@@ -77,6 +140,15 @@ export default function Lab8Page() {
             </h1>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Аналіз необхідної кількості пристроїв для досягнення прискорення</span>
           </div>
+        </div>
+        <div className="download-area" style={{ margin: 0, display: 'flex', gap: '12px' }}>
+          <label className="btn btn-secondary" style={{ cursor: 'pointer', padding: '8px 16px', display: 'flex', alignItems: 'center' }}>
+            📂 З файлу
+            <input type="file" accept=".txt,.json" onChange={handleFileUpload} style={{ display: 'none' }} />
+          </label>
+          <button className="btn btn-secondary" onClick={resetVariant} style={{ padding: '8px 16px', borderColor: 'var(--accent)', color: 'var(--accent)' }}>
+            🔄 Скинути до Варіанту 15
+          </button>
         </div>
       </div>
 
@@ -185,6 +257,78 @@ export default function Lab8Page() {
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '8px' }}>Критичне уповільнення темпів зростання ефективності.</div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* TABLE AND PROPOSAL SECTION (TASKS 6-9) */}
+      <div className="glass-card animate-slide-up" style={{ marginTop: '24px', padding: '32px' }}>
+        <h2 className="section-title" style={{ marginTop: 0, marginBottom: '24px' }}>
+          Аналіз варіанту та запропоноване рішення (Таблиця)
+        </h2>
+        
+        <div style={{ overflowX: 'auto', marginBottom: '24px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+            <thead>
+              <tr style={{ background: 'rgba(255,255,255,0.05)' }}>
+                <th style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>Характеристика</th>
+                <th style={{ padding: '12px', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>
+                  № Заданий (Вхідний)
+                </th>
+                <th style={{ padding: '12px', borderBottom: '1px solid var(--border-color)', color: 'var(--accent)' }}>
+                  № Запропонований (M)
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>Частка паралельних обчислень (1 - β)</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>{params.parallel} ({(params.parallel*100).toFixed(1)}%)</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)', color: 'var(--accent)', fontWeight: 'bold' }}>
+                  {results.altParallel.toFixed(4)} ({(results.altParallel*100).toFixed(1)}%)
+                </td>
+              </tr>
+              <tr>
+                <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>Макс можливе прискорення у випадку використання однакових процесорів (S)</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>{params.s_given}</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>{params.s_given}</td>
+              </tr>
+              <tr>
+                <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>Необхідно забезпечити від a₁ до a₂ від S_max</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>{(params.a1*100).toFixed(0)}% - {(params.a2*100).toFixed(0)}%</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>{(params.a1*100).toFixed(0)}% - {(params.a2*100).toFixed(0)}%</td>
+              </tr>
+              <tr>
+                <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>Статус (S_max)</td>
+                <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)', color: results.impossible ? '#cf6679' : 'var(--teal)' }}>
+                  {results.impossible ? 'НЕСУМІСНИЙ (S_max = ' + results.s_max.toFixed(2) + ')' : 'СУМІСНИЙ (S_max = ' + results.s_max.toFixed(2) + ')' }
+                </td>
+                <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)', color: results.isOriginalCompatible ? '#cf6679' : 'var(--teal)' }}>
+                  {results.isOriginalCompatible 
+                    ? 'НЕСУМІСНИЙ (S_max = ' + (1/(1-results.altParallel)).toFixed(2) + ')'
+                    : 'СУМІСНИЙ (S_max = ' + (1/(1-results.altParallel)).toFixed(2) + ')'}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style={{ background: 'var(--bg-secondary)', padding: '20px', borderRadius: '8px' }}>
+          <h4 style={{ margin: '0 0 12px 0', color: 'white' }}>Обґрунтування оновленого варіанту:</h4>
+          {results.impossible ? (
+            <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+              Оскільки початковий варіант виявився <b>несумісним</b> (задане прискорення S={params.s_given} перевищує теоретичну межу Smax={results.s_max.toFixed(2)}), 
+              алгоритм не зможе досягти поставленої мети навіть при нескінченній кількості пристроїв через занадто велику частку послідовного коду (β={(results.beta*100).toFixed(1)}%).<br/><br/>
+              <b>Вирішення:</b> Запропоновано модифікувати код алгоритму, щоб збільшити ступінь його розпаралелювання з {(params.parallel*100).toFixed(1)}% до <b>{(results.altParallel*100).toFixed(1)}%</b>. 
+              Тепер нова гранична межа становить Smax={(1/(1-results.altParallel)).toFixed(2)}, що з запасом покриває задане S={params.s_given}. 
+            </p>
+          ) : (
+            <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+              Оскільки початковий варіант є <b>сумісним</b>, для навчальних цілей пропонується "погіршений" <b>несумісний варіант</b>.<br/><br/>
+              Якщо внаслідок неефективного програмування частка паралельних обчислень впаде до <b>{(results.altParallel*100).toFixed(1)}%</b>, 
+              то теоретичне граничне прискорення Smax обвалиться до {(1/(1-results.altParallel)).toFixed(2)}. 
+              За таких умов досягти необхідного S={params.s_given} стане фізично неможливо, незалежно від потужності обчислювального кластера.
+            </p>
+          )}
         </div>
       </div>
 
