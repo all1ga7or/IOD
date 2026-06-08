@@ -99,9 +99,9 @@ export default function Lab2ResultsPage() {
       });
 
       csv += '\n=== ФІНАЛЬНИЙ РЕЙТИНГ (Генетичний алгоритм) ===\n';
-      csv += 'Місце,Об\'єкт,Бали,Згадувань\n';
+      csv += 'Місце,Об\'єкт,Сума попарних переваг\n';
       results.evolutionResult.ranking.forEach(r => {
-        csv += `${r.rank},"${r.name}",${r.total_score},${r.total_mentions}\n`;
+        csv += `${r.rank},"${r.name}",${r.ga_score || 0}\n`;
       });
 
       content = csv;
@@ -181,6 +181,9 @@ export default function Lab2ResultsPage() {
 
   const maxHeurScore = results.heuristicFrequency.length > 0
     ? Math.max(...results.heuristicFrequency.map(h => h.weighted_score || h.vote_count || 0)) : 1;
+
+  const maxGaScore = results.evolutionResult.ranking?.length > 0
+    ? Math.max(...results.evolutionResult.ranking.map(r => r.ga_score || 0)) : 1;
 
   return (
     <div className="container animate-fade">
@@ -286,7 +289,7 @@ export default function Lab2ResultsPage() {
                   {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`}
                 </div>
                 <div style={{ flex: '0 0 180px', fontWeight: 500 }}>{r.name}</div>
-                <span className="score-value" style={{ flex: 1 }}>{r.total_score} балів</span>
+                <span className="score-value" style={{ flex: 1 }}>{r.ga_score || 0} перемог у парах</span>
               </div>
             ))}
           </div>
@@ -747,14 +750,14 @@ Child:   [G, F | C, D, E | B, A]`}
                 <div className="score-bar-container" style={{ flex: 1 }}>
                   <div className="score-bar">
                     <div className="score-bar-fill" style={{
-                      width: `${maxObjScore > 0 ? (r.total_score / maxObjScore) * 100 : 0}%`,
+                      width: `${maxGaScore > 0 ? ((r.ga_score || 0) / maxGaScore) * 100 : 0}%`,
                       background: idx < 3 ? 'var(--gradient-teal)' : 'var(--gradient-main)'
                     }} />
                   </div>
-                  <span className="score-value">{r.total_score}</span>
+                  <span className="score-value">{r.ga_score || 0} п.п.</span>
                 </div>
                 <div style={{ display: 'flex', gap: '6px', fontSize: '0.75rem' }}>
-                  <span className="badge badge-teal">Згадувань: {r.total_mentions}</span>
+                  <span className="badge badge-teal">Переваг: {r.ga_score || 0}</span>
                 </div>
               </div>
             ))}
