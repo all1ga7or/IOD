@@ -598,6 +598,103 @@ export default function Lab2ResultsPage() {
             </div>
           </div>
 
+          {/* Проміжні розрахунки */}
+          <div className="glass-card" style={{ padding: '20px', marginBottom: '24px' }}>
+            <h3 style={{ fontSize: '1rem', color: 'var(--accent)', marginBottom: '16px' }}>🧮 Проміжні розрахунки та математична база</h3>
+            
+            {/* Формула фітнесу */}
+            <div style={{ marginBottom: '24px', background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '8px' }}>
+              <h4 style={{ fontSize: '0.9rem', marginBottom: '10px' }}>1. Розрахунок Фітнес-функції (Максимізація узгодженості)</h4>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
+                Фітнес-функція оцінює перестановку (χ), підсумовуючи узгодженість пар за матрицею переваг P:
+              </p>
+              <div style={{ background: '#0d1117', padding: '12px', borderRadius: '6px', fontFamily: 'monospace', textAlign: 'center', fontSize: '1.1rem', color: 'var(--teal)' }}>
+                F(χ) = Σ<sub style={{fontSize: '0.7rem'}}>i &lt; j</sub> P[χ(i)][χ(j)]
+              </div>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
+                * Де P[A][B] — кількість експертів, які вважають об&apos;єкт A кращим за B.
+              </p>
+            </div>
+
+            {/* Матриця переваг */}
+            {results.evolutionResult.prefMatrix && (
+              <div style={{ marginBottom: '24px' }}>
+                <h4 style={{ fontSize: '0.9rem', marginBottom: '10px' }}>2. Матриця попарних переваг експертів (P)</h4>
+                <div className="table-wrap" style={{ overflowX: 'auto', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px' }}>
+                  <table style={{ fontSize: '0.8rem', minWidth: 'max-content', margin: 0 }}>
+                    <thead>
+                      <tr>
+                        <th style={{width: '40px', background: 'rgba(255,255,255,0.05)'}}></th>
+                        {results.filterResult.finalObjects.map((obj, i) => (
+                          <th key={obj.id} style={{textAlign: 'center'}} title={obj.name}>
+                            O{i+1}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {results.filterResult.finalObjects.map((objRow, i) => (
+                        <tr key={objRow.id}>
+                          <th style={{background: 'rgba(255,255,255,0.05)', textAlign: 'right'}} title={objRow.name}>
+                            O{i+1}
+                          </th>
+                          {results.filterResult.finalObjects.map((objCol, j) => {
+                            const val = results.evolutionResult.prefMatrix[objRow.id]?.[objCol.id] || 0;
+                            const isDiag = i === j;
+                            const isHigh = val > 10;
+                            return (
+                              <td key={objCol.id} style={{
+                                textAlign: 'center', 
+                                background: isDiag ? 'rgba(0,0,0,0.2)' : (isHigh ? 'rgba(0, 150, 136, 0.15)' : 'transparent'),
+                                color: isDiag ? 'var(--text-muted)' : (isHigh ? '#4db6ac' : 'var(--text-secondary)')
+                              }}>
+                                {isDiag ? '-' : Math.round(val)}
+                              </td>
+                            )
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div style={{fontSize: '0.75rem', marginTop: '6px', color: 'var(--text-muted)'}}>* Об&apos;єкти зашифровано як O1..ON для компактності (наведіть курсор для повної назви). Зеленим підсвічено найсильніші переваги.</div>
+              </div>
+            )}
+
+            {/* Схема операторів */}
+            <div>
+              <h4 style={{ fontSize: '0.9rem', marginBottom: '10px' }}>3. Схема генетичних операторів</h4>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <h5 style={{ fontSize: '0.85rem', color: 'var(--teal)', marginBottom: '10px' }}>Схрещування: PMX (Partially Matched)</h5>
+                  <pre style={{ fontSize: '0.75rem', background: '#0d1117', padding: '12px', borderRadius: '4px', overflowX: 'auto', margin: 0, color: '#e6edf3' }}>
+{`Parent1: [A, B | C, D, E | F, G]
+Parent2: [G, F | E, D, C | B, A]
+
+> Крок 1 (копія ділянки P1):
+Child:   [_, _ | C, D, E | _, _]
+
+> Крок 2 (заповнення залишками з P2):
+Child:   [G, F | C, D, E | B, A]`}
+                  </pre>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <h5 style={{ fontSize: '0.85rem', color: 'var(--purple)', marginBottom: '10px' }}>Мутація: Swap (15%)</h5>
+                  <pre style={{ fontSize: '0.75rem', background: '#0d1117', padding: '12px', borderRadius: '4px', overflowX: 'auto', margin: 0, color: '#e6edf3' }}>
+{`Геном: [C, A, D, B]
+          ↑     ↑ (випадкові)
+Після: [C, B, D, A]
+
+> Призначення:
+Змінює місцями 2 випадкові 
+об'єкти для виходу з локальних 
+популяційних оптимумів.`}
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Convergence log */}
           {results.evolutionResult.log && results.evolutionResult.log.length > 0 && (
             <>
