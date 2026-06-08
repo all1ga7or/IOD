@@ -98,7 +98,7 @@ export default function Lab2ResultsPage() {
         }
       });
 
-      csv += '\n=== ФІНАЛЬНИЙ РЕЙТИНГ (Імітація відпалу) ===\n';
+      csv += '\n=== ФІНАЛЬНИЙ РЕЙТИНГ (Генетичний алгоритм) ===\n';
       csv += 'Місце,Об\'єкт,Бали,Згадувань\n';
       results.evolutionResult.ranking.forEach(r => {
         csv += `${r.rank},"${r.name}",${r.total_score},${r.total_mentions}\n`;
@@ -264,7 +264,7 @@ export default function Lab2ResultsPage() {
               <div className="step-item">
                 <span className="step-number">4</span>
                 <div>
-                  <strong>Ранжування:</strong> Імітація відпалу (Simulated Annealing) для фінального рейтингу {results.evolutionResult.ranking.length} об&apos;єктів
+                  <strong>Ранжування:</strong> Генетичний алгоритм (Genetic Algorithm) для фінального вирівнювання {results.evolutionResult.ranking.length} об&apos;єктів
                 </div>
               </div>
             </div>
@@ -532,23 +532,60 @@ export default function Lab2ResultsPage() {
       {/* ==================== TAB: EVOLUTIONARY ALGORITHM ==================== */}
       {activeTab === 'evolution' && (
         <div className="animate-fade">
-          <h2 className="section-title">🧬 Еволюційний алгоритм: Імітація відпалу</h2>
+          <h2 className="section-title">🧬 Еволюційний алгоритм: Генетичний алгоритм (GA)</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '16px' }}>
-            Simulated Annealing оптимізує ранжування {results.evolutionResult.ranking.length} об&apos;єктів,
-            мінімізуючи розбіжності з експертними перевагами (Kendall tau).
+            На цьому етапі кожен експерт дає повне рандомне ранжування {results.evolutionResult.ranking.length} об&apos;єктів.
+            Генетичний алгоритм оптимізує підсумковий рейтинг, максимізуючи узгодженість (суму попарних переваг за Кендаллом).
           </p>
+
+          {/* Вхідні дані: Повні ранжування */}
+          {results.evolutionResult.fullRankingVotes && (
+            <div className="glass-card" style={{ padding: '20px', marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '1rem', color: 'var(--accent)', marginBottom: '12px' }}>📋 Вхідні дані: Повні ранжування експертів</h3>
+              <div className="table-wrap" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                <table style={{ minWidth: '600px' }}>
+                  <thead>
+                    <tr>
+                      <th style={{width: '90px'}}>Експерт</th>
+                      <th>Повне ранжування (від 1 до {results.evolutionResult.ranking.length})</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {results.evolutionResult.fullRankingVotes.map((v, i) => (
+                      <tr key={i}>
+                        <td><strong>Експерт {v.expertId}</strong></td>
+                        <td style={{ fontSize: '0.8rem', lineHeight: '1.4' }}>
+                          {v.picks.sort((a,b) => a.rank - b.rank).map((p, idx) => {
+                            const obj = results.filterResult.finalObjects.find(o => o.id === p.objectId);
+                            return (
+                              <span key={idx} style={{ 
+                                display: 'inline-block', margin: '2px 4px', padding: '2px 6px',
+                                background: 'rgba(255,255,255,0.05)', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)'
+                              }}>
+                                <span style={{color: 'var(--teal)'}}>{p.rank}.</span> {obj?.name || `ID:${p.objectId}`}
+                              </span>
+                            )
+                          })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
           {/* Algorithm parameters */}
           <div className="glass-card" style={{ padding: '20px', marginBottom: '24px' }}>
             <h3 style={{ fontSize: '1rem', color: 'var(--accent)', marginBottom: '12px' }}>⚙️ Параметри алгоритму</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
               {[
-                ['Початкова T', '100.0'],
-                ['Коефіцієнт охолодження', '0.995'],
-                ['Мін. T', '0.01'],
-                ['Макс. ітерацій', '2000'],
-                ['Операція', 'Random swap'],
-                ['Fitness', 'Kendall tau']
+                ['Популяція', '50 особин'],
+                ['Покоління (ітерації)', '200'],
+                ['Ймовірність мутації', '15% (Swap)'],
+                ['Схрещування', 'PMX'],
+                ['Селекція', 'Топ-50% (Елітизм)'],
+                ['Фітнес-функція', 'Kendall tau (сума переваг)']
               ].map(([label, value]) => (
                 <div key={label} style={{
                   background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-sm)',
@@ -562,25 +599,21 @@ export default function Lab2ResultsPage() {
           </div>
 
           {/* Convergence log */}
-          {results.evolutionResult.iterations && results.evolutionResult.iterations.length > 0 && (
+          {results.evolutionResult.log && results.evolutionResult.log.length > 0 && (
             <>
               <h3 className="section-title" style={{ fontSize: '1rem' }}>📈 Збіжність алгоритму</h3>
               <div className="table-wrap" style={{ marginBottom: '24px' }}>
                 <table>
                   <thead>
                     <tr>
-                      <th>Ітерація</th>
-                      <th>Температура</th>
-                      <th>Поточний Fitness</th>
-                      <th>Кращий Fitness</th>
+                      <th>Покоління</th>
+                      <th>Кращий Fitness в популяції</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {results.evolutionResult.iterations.map((it, i) => (
+                    {results.evolutionResult.log.map((it, i) => (
                       <tr key={i}>
-                        <td>{it.iteration}</td>
-                        <td>{it.temperature}</td>
-                        <td>{it.currentFitness}</td>
+                        <td>{it.generation}</td>
                         <td style={{ color: 'var(--teal)', fontWeight: 600 }}>{it.bestFitness}</td>
                       </tr>
                     ))}
@@ -597,7 +630,7 @@ export default function Lab2ResultsPage() {
               Найкращий fitness (Kendall tau): {results.evolutionResult.bestFitness}
             </p>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', lineHeight: '1.5' }}>
-              <strong>Примітка:</strong> Порядок у рейтингу визначається еволюційним алгоритмом, який максимізує узгодженість (Kendall tau) з парними порівняннями експертів. Тому об&apos;єкти з меншим загальним балом (з ЛР1) можуть займати вищі позиції, якщо вони частіше перемагали в прямих "дуелях" між собою.
+              <strong>Примітка:</strong> Порядок у рейтингу визначається генетичним алгоритмом, який максимізує узгодженість з попарними перевагами експертів на основі повних ранжувань. Тому об&apos;єкти з меншим загальним балом (з ЛР1) можуть займати вищі позиції, якщо вони частіше перемагали в прямих "дуелях" між собою.
             </p>
           </div>
           <div className="glass-card" style={{ padding: '24px' }}>
@@ -656,7 +689,7 @@ export default function Lab2ResultsPage() {
                 <span>✅</span> <span>Етапи фільтрації (до/після, видалені об&apos;єкти)</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>✅</span> <span>Фінальний рейтинг (імітація відпалу)</span>
+                <span>✅</span> <span>Фінальний рейтинг (Генетичний алгоритм)</span>
               </div>
             </div>
           </div>
@@ -689,8 +722,8 @@ export default function Lab2ResultsPage() {
                   ['Проголосували за евристики', results.stats.heuristic_voters],
                   ['Етапів фільтрації', results.filterResult.steps.length],
                   ['Об\'єктів після фільтрації', results.stats.final_objects],
-                  ['Алгоритм ранжування', 'Simulated Annealing (імітація відпалу)'],
-                  ['Кращий fitness', results.evolutionResult.bestFitness]
+                  ['Алгоритм ранжування', 'Генетичний алгоритм (PMX кросовер)'],
+                  ['Кращий фітнес (узгодженість)', results.evolutionResult.bestFitness]
                 ].map(([param, value], i) => (
                   <tr key={i}>
                     <td style={{ fontWeight: 500 }}>{param}</td>

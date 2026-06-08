@@ -184,6 +184,15 @@
         "documentation": {}
     },
     {
+        "label": "random",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "random",
+        "description": "random",
+        "detail": "random",
+        "documentation": {}
+    },
+    {
         "label": "get_default_variant_15",
         "kind": 2,
         "importPath": "lab5.lab5",
@@ -514,6 +523,96 @@
         "description": "init_db",
         "peekOfCode": "def init_db():\n    conn = sqlite3.connect('series.db')\n    c = conn.cursor()\n    # Таблиця експертів\n    c.execute('''CREATE TABLE IF NOT EXISTS experts (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    name TEXT UNIQUE,\n                    role TEXT DEFAULT 'expert'\n                 )''')\n    # Таблиця об'єктів (Серіали)",
         "detail": "init_db",
+        "documentation": {}
+    },
+    {
+        "label": "generate_votes",
+        "kind": 2,
+        "importPath": "lab2_demo",
+        "description": "lab2_demo",
+        "peekOfCode": "def generate_votes(expert_count=21):\n    \"\"\"Генерація голосів: кожен експерт обирає ТОП-3 серіали.\"\"\"\n    votes = []\n    for i in range(expert_count):\n        picks = random.sample(range(len(OBJECTS)), 3)\n        votes.append({\n            \"expert\": f\"Експерт {i+1}\",\n            \"picks\": [\n                {\"id\": picks[0], \"rank\": 1},\n                {\"id\": picks[1], \"rank\": 2},",
+        "detail": "lab2_demo",
+        "documentation": {}
+    },
+    {
+        "label": "compute_stats",
+        "kind": 2,
+        "importPath": "lab2_demo",
+        "description": "lab2_demo",
+        "peekOfCode": "def compute_stats(objects, votes):\n    stats = []\n    for i, name in enumerate(objects):\n        first  = sum(1 for v in votes for p in v['picks'] if p['id'] == i and p['rank'] == 1)\n        second = sum(1 for v in votes for p in v['picks'] if p['id'] == i and p['rank'] == 2)\n        third  = sum(1 for v in votes for p in v['picks'] if p['id'] == i and p['rank'] == 3)\n        score = first * 3 + second * 2 + third * 1\n        mentions = first + second + third\n        stats.append({\"id\": i, \"name\": name, \"first\": first, \"second\": second,\n                       \"third\": third, \"score\": score, \"mentions\": mentions})",
+        "detail": "lab2_demo",
+        "documentation": {}
+    },
+    {
+        "label": "apply_heuristics",
+        "kind": 2,
+        "importPath": "lab2_demo",
+        "description": "lab2_demo",
+        "peekOfCode": "def apply_heuristics(stats):\n    print(\"\\n\" + \"=\"*60)\n    print(\"КРОК 1: ЕВРИСТИЧНЕ ВІДСІЮВАННЯ (з 14 до ≤10 об'єктів)\")\n    print(\"=\"*60)\n    print(f\"\\n{'Об`єкт':<20} {'1-ше':>5} {'2-ге':>5} {'3-тє':>5} {'Бал':>5} {'Згад.':>6}\")\n    print(\"-\" * 52)\n    for s in stats:\n        print(f\"{s['name']:<20} {s['first']:>5} {s['second']:>5} {s['third']:>5} {s['score']:>5} {s['mentions']:>6}\")\n    remaining = stats[:]\n    eliminated = []",
+        "detail": "lab2_demo",
+        "documentation": {}
+    },
+    {
+        "label": "build_preference_matrix",
+        "kind": 2,
+        "importPath": "lab2_demo",
+        "description": "lab2_demo",
+        "peekOfCode": "def build_preference_matrix(objects, votes):\n    \"\"\"P[i][j] = скільки експертів вважають i кращим за j.\"\"\"\n    n = len(objects)\n    ids = [o['id'] for o in objects]\n    id_to_idx = {id_: i for i, id_ in enumerate(ids)}\n    P = [[0.0] * n for _ in range(n)]\n    for v in votes:\n        ranked = [p for p in v['picks'] if p['id'] in id_to_idx]\n        ranked.sort(key=lambda p: p['rank'])\n        ranked_idxs = [id_to_idx[p['id']] for p in ranked]",
+        "detail": "lab2_demo",
+        "documentation": {}
+    },
+    {
+        "label": "fitness",
+        "kind": 2,
+        "importPath": "lab2_demo",
+        "description": "lab2_demo",
+        "peekOfCode": "def fitness(perm, P):\n    \"\"\"Kendall tau score: сума узгоджених пар.\"\"\"\n    score = 0\n    for i in range(len(perm)):\n        for j in range(i + 1, len(perm)):\n            score += P[perm[i]][perm[j]]\n    return score\ndef pmx_crossover(p1, p2):\n    \"\"\"Partially Matched Crossover — оператор схрещування для перестановок.\"\"\"\n    n = len(p1)",
+        "detail": "lab2_demo",
+        "documentation": {}
+    },
+    {
+        "label": "pmx_crossover",
+        "kind": 2,
+        "importPath": "lab2_demo",
+        "description": "lab2_demo",
+        "peekOfCode": "def pmx_crossover(p1, p2):\n    \"\"\"Partially Matched Crossover — оператор схрещування для перестановок.\"\"\"\n    n = len(p1)\n    start = random.randint(0, n - 2)\n    end = random.randint(start + 1, n)\n    child = [None] * n\n    used = set()\n    # Копіюємо ділянку від Батька 1\n    for i in range(start, end):\n        child[i] = p1[i]",
+        "detail": "lab2_demo",
+        "documentation": {}
+    },
+    {
+        "label": "swap_mutation",
+        "kind": 2,
+        "importPath": "lab2_demo",
+        "description": "lab2_demo",
+        "peekOfCode": "def swap_mutation(perm):\n    \"\"\"Мутація: обмін двох випадкових генів.\"\"\"\n    n = len(perm)\n    a, b = random.sample(range(n), 2)\n    perm[a], perm[b] = perm[b], perm[a]\n    return perm\ndef run_genetic_algorithm(objects, votes, pop_size=50, generations=200, mutation_rate=0.15):\n    print(\"\\n\" + \"=\"*60)\n    print(\"КРОК 2: ГЕНЕТИЧНИЙ АЛГОРИТМ (GA)\")\n    print(\"=\"*60)",
+        "detail": "lab2_demo",
+        "documentation": {}
+    },
+    {
+        "label": "run_genetic_algorithm",
+        "kind": 2,
+        "importPath": "lab2_demo",
+        "description": "lab2_demo",
+        "peekOfCode": "def run_genetic_algorithm(objects, votes, pop_size=50, generations=200, mutation_rate=0.15):\n    print(\"\\n\" + \"=\"*60)\n    print(\"КРОК 2: ГЕНЕТИЧНИЙ АЛГОРИТМ (GA)\")\n    print(\"=\"*60)\n    n = len(objects)\n    P = build_preference_matrix(objects, votes)\n    # Показуємо фрагмент матриці переваг\n    print(f\"\\nМатриця переваг P[i][j] ({n}×{n}):\")\n    names_short = [o['name'][:8] for o in objects]\n    print(f\"{'':>10}\", end=\"\")",
+        "detail": "lab2_demo",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "lab2_demo",
+        "description": "lab2_demo",
+        "peekOfCode": "def main():\n    print('+' + '='*58 + '+')\n    print(\"|  ЛАБОРАТОРНА РОБОТА №2 — Генетичний Алгоритм (GA)        |\")\n    print(\"|  Дисципліна: Інтелектуальна обробка даних                 |\")\n    print(\"|  Тема: Технології розподіленої обробки даних              |\")\n    print('+' + '='*58 + '+')\n    print(f\"\\nПочаткова множина: {len(OBJECTS)} об'єктів (серіалів)\")\n    print(f\"Кількість експертів: 21\")\n    random.seed(42)  # Фіксований seed для відтворюваності\n    votes = generate_votes(21)",
+        "detail": "lab2_demo",
+        "documentation": {}
+    },
+    {
+        "label": "OBJECTS",
+        "kind": 5,
+        "importPath": "lab2_demo",
+        "description": "lab2_demo",
+        "peekOfCode": "OBJECTS = [\n    \"Breaking Bad\", \"Game of Thrones\", \"The Sopranos\", \"The Wire\", \"Chernobyl\",\n    \"Stranger Things\", \"True Detective\", \"Fargo\", \"The Office\", \"Friends\",\n    \"Dark\", \"Peaky Blinders\", \"Better Call Saul\", \"Black Mirror\"\n]\ndef generate_votes(expert_count=21):\n    \"\"\"Генерація голосів: кожен експерт обирає ТОП-3 серіали.\"\"\"\n    votes = []\n    for i in range(expert_count):\n        picks = random.sample(range(len(OBJECTS)), 3)",
+        "detail": "lab2_demo",
         "documentation": {}
     }
 ]
