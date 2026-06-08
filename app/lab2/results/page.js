@@ -99,9 +99,9 @@ export default function Lab2ResultsPage() {
       });
 
       csv += '\n=== ФІНАЛЬНИЙ РЕЙТИНГ (Генетичний алгоритм) ===\n';
-      csv += 'Місце,Об\'єкт,Сума попарних переваг\n';
+      csv += 'Місце,Об\'єкт,Сумарне відхилення (Метрика Кука)\n';
       results.evolutionResult.ranking.forEach(r => {
-        csv += `${r.rank},"${r.name}",${r.ga_score || 0}\n`;
+        csv += `${r.rank},"${r.name}",${r.cook_score || 0}\n`;
       });
 
       content = csv;
@@ -289,7 +289,7 @@ export default function Lab2ResultsPage() {
                   {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`}
                 </div>
                 <div style={{ flex: '0 0 180px', fontWeight: 500 }}>{r.name}</div>
-                <span className="score-value" style={{ flex: 1 }}>{r.ga_score || 0} перемог у парах</span>
+                <span className="score-value" style={{ flex: 1, color: 'var(--text-muted)' }}>{r.cook_score || 0} сумарних відхилень</span>
               </div>
             ))}
           </div>
@@ -538,7 +538,7 @@ export default function Lab2ResultsPage() {
           <h2 className="section-title">🧬 Еволюційний алгоритм: Генетичний алгоритм (GA)</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '16px' }}>
             На цьому етапі кожен експерт дає повне рандомне ранжування {results.evolutionResult.ranking.length} об&apos;єктів.
-            Генетичний алгоритм оптимізує підсумковий рейтинг, максимізуючи узгодженість (суму попарних переваг за Кендаллом).
+            Генетичний алгоритм мінімізує сумарне неспівпадання рангів альтернатив за допомогою обчислення медiани Кука-Сейфорда.
           </p>
 
           {/* Вхідні дані: Повні ранжування */}
@@ -588,7 +588,7 @@ export default function Lab2ResultsPage() {
                 ['Ймовірність мутації', '15% (Swap)'],
                 ['Схрещування', 'PMX'],
                 ['Селекція', 'Топ-50% (Елітизм)'],
-                ['Фітнес-функція', 'Kendall tau (сума переваг)']
+                ['Фітнес-функція', 'Мінімізація Метрики Кука']
               ].map(([label, value]) => (
                 <div key={label} style={{
                   background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-sm)',
@@ -607,66 +607,21 @@ export default function Lab2ResultsPage() {
             
             {/* Формула фітнесу */}
             <div style={{ marginBottom: '24px', background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '8px' }}>
-              <h4 style={{ fontSize: '0.9rem', marginBottom: '10px' }}>1. Розрахунок Фітнес-функції (Максимізація узгодженості)</h4>
+              <h4 style={{ fontSize: '0.9rem', marginBottom: '10px' }}>1. Розрахунок Фітнес-функції (Метрика Кука)</h4>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
-                Фітнес-функція оцінює перестановку (χ), підсумовуючи узгодженість пар за матрицею переваг P:
+                Відповідно до задачі колективного ранжування, алгоритм мінімізує сумарне неспівпадання рангів об&apos;єктів між кандидатським ранжуванням та ранжуваннями всіх експертів (відстань Кука):
               </p>
-              <div style={{ background: '#0d1117', padding: '12px', borderRadius: '6px', fontFamily: 'monospace', textAlign: 'center', fontSize: '1.1rem', color: 'var(--teal)' }}>
-                F(χ) = Σ<sub style={{fontSize: '0.7rem'}}>i &lt; j</sub> P[χ(i)][χ(j)]
+              <div style={{ background: '#0d1117', padding: '12px', borderRadius: '6px', fontFamily: 'monospace', textAlign: 'center', fontSize: '1.2rem', color: 'var(--teal)' }}>
+                D(R) = Σ<sub style={{fontSize: '0.7rem'}}>v∈V</sub> Σ<sub style={{fontSize: '0.7rem'}}>i∈I</sub> | r<sub style={{fontSize: '0.7rem'}}>i</sub><sup style={{fontSize: '0.7rem'}}>R</sup> - r<sub style={{fontSize: '0.7rem'}}>i</sub><sup style={{fontSize: '0.7rem'}}>v</sup> |
               </div>
               <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
-                * Де P[A][B] — кількість експертів, які вважають об&apos;єкт A кращим за B.
+                * Де <b>r<sub style={{fontSize: '0.7rem'}}>i</sub><sup style={{fontSize: '0.7rem'}}>R</sup></b> — позиція об&apos;єкта <i>i</i> у згенерованому ранжуванні R, а <b>r<sub style={{fontSize: '0.7rem'}}>i</sub><sup style={{fontSize: '0.7rem'}}>v</sup></b> — його позиція в оцінці експерта <i>v</i>. Менше значення означає кращий результат (менше відхилення).
               </p>
             </div>
 
-            {/* Матриця переваг */}
-            {results.evolutionResult.prefMatrix && (
-              <div style={{ marginBottom: '24px' }}>
-                <h4 style={{ fontSize: '0.9rem', marginBottom: '10px' }}>2. Матриця попарних переваг експертів (P)</h4>
-                <div className="table-wrap" style={{ overflowX: 'auto', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px' }}>
-                  <table style={{ fontSize: '0.8rem', minWidth: 'max-content', margin: 0 }}>
-                    <thead>
-                      <tr>
-                        <th style={{width: '40px', background: 'rgba(255,255,255,0.05)'}}></th>
-                        {results.filterResult.finalObjects.map((obj, i) => (
-                          <th key={obj.id} style={{textAlign: 'center'}} title={obj.name}>
-                            O{i+1}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {results.filterResult.finalObjects.map((objRow, i) => (
-                        <tr key={objRow.id}>
-                          <th style={{background: 'rgba(255,255,255,0.05)', textAlign: 'right'}} title={objRow.name}>
-                            O{i+1}
-                          </th>
-                          {results.filterResult.finalObjects.map((objCol, j) => {
-                            const val = results.evolutionResult.prefMatrix[objRow.id]?.[objCol.id] || 0;
-                            const isDiag = i === j;
-                            const isHigh = val > 10;
-                            return (
-                              <td key={objCol.id} style={{
-                                textAlign: 'center', 
-                                background: isDiag ? 'rgba(0,0,0,0.2)' : (isHigh ? 'rgba(0, 150, 136, 0.15)' : 'transparent'),
-                                color: isDiag ? 'var(--text-muted)' : (isHigh ? '#4db6ac' : 'var(--text-secondary)')
-                              }}>
-                                {isDiag ? '-' : Math.round(val)}
-                              </td>
-                            )
-                          })}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div style={{fontSize: '0.75rem', marginTop: '6px', color: 'var(--text-muted)'}}>* Об&apos;єкти зашифровано як O1..ON для компактності (наведіть курсор для повної назви). Зеленим підсвічено найсильніші переваги.</div>
-              </div>
-            )}
-
             {/* Схема операторів */}
             <div>
-              <h4 style={{ fontSize: '0.9rem', marginBottom: '10px' }}>3. Схема генетичних операторів</h4>
+              <h4 style={{ fontSize: '0.9rem', marginBottom: '10px' }}>2. Схема генетичних операторів</h4>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
                 <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
                   <h5 style={{ fontSize: '0.85rem', color: 'var(--teal)', marginBottom: '10px' }}>Схрещування: PMX (Partially Matched)</h5>
@@ -727,10 +682,10 @@ Child:   [G, F | C, D, E | B, A]`}
           <h3 className="section-title" style={{ fontSize: '1rem' }}>🏆 Оптимальне ранжування</h3>
           <div style={{ marginBottom: '16px' }}>
             <p style={{ color: 'var(--teal)', fontSize: '0.85rem', marginBottom: '4px', fontWeight: 600 }}>
-              Найкращий fitness (Kendall tau): {results.evolutionResult.bestFitness}
+              Найкращий fitness (Сумарне відхилення Кука): {results.evolutionResult.bestFitness}
             </p>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', lineHeight: '1.5' }}>
-              <strong>Примітка:</strong> Порядок у рейтингу визначається генетичним алгоритмом, який максимізує узгодженість з попарними перевагами експертів на основі повних ранжувань. Тому об&apos;єкти з меншим загальним балом (з ЛР1) можуть займати вищі позиції, якщо вони частіше перемагали в прямих "дуелях" між собою.
+              <strong>Примітка:</strong> Порядок у рейтингу визначається генетичним алгоритмом, який мінімізує відстань Кука. Значення "Відхилення" (Cook score) показує сумарне неспівпадання позицій конкретного об&apos;єкту в оптимальному результаті порівняно з усіма оцінками експертів. Менше значення $\rightarrow$ більша згода експертів щодо позиції об&apos;єкта.
             </p>
           </div>
           <div className="glass-card" style={{ padding: '24px' }}>
@@ -747,17 +702,11 @@ Child:   [G, F | C, D, E | B, A]`}
                   {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`}
                 </div>
                 <div style={{ flex: '0 0 180px', fontWeight: 600, fontSize: '1.05rem' }}>{r.name}</div>
-                <div className="score-bar-container" style={{ flex: 1 }}>
-                  <div className="score-bar">
-                    <div className="score-bar-fill" style={{
-                      width: `${maxGaScore > 0 ? ((r.ga_score || 0) / maxGaScore) * 100 : 0}%`,
-                      background: idx < 3 ? 'var(--gradient-teal)' : 'var(--gradient-main)'
-                    }} />
-                  </div>
-                  <span className="score-value">{r.ga_score || 0} п.п.</span>
+                <div className="score-bar-container" style={{ flex: 1, flexDirection: 'row-reverse' }}>
+                  <span className="score-value" style={{ color: 'var(--text-muted)' }}>{r.cook_score || 0} відхилень</span>
                 </div>
                 <div style={{ display: 'flex', gap: '6px', fontSize: '0.75rem' }}>
-                  <span className="badge badge-teal">Переваг: {r.ga_score || 0}</span>
+                  <span className="badge badge-purple" style={{ opacity: 0.8 }}>Cook Dist: {r.cook_score || 0}</span>
                 </div>
               </div>
             ))}

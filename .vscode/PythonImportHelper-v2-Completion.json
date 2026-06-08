@@ -553,20 +553,11 @@
         "documentation": {}
     },
     {
-        "label": "build_preference_matrix",
-        "kind": 2,
-        "importPath": "lab2_demo",
-        "description": "lab2_demo",
-        "peekOfCode": "def build_preference_matrix(objects, votes):\n    \"\"\"P[i][j] = скільки експертів вважають i кращим за j.\"\"\"\n    n = len(objects)\n    ids = [o['id'] for o in objects]\n    id_to_idx = {id_: i for i, id_ in enumerate(ids)}\n    P = [[0.0] * n for _ in range(n)]\n    for v in votes:\n        ranked = [p for p in v['picks'] if p['id'] in id_to_idx]\n        ranked.sort(key=lambda p: p['rank'])\n        ranked_idxs = [id_to_idx[p['id']] for p in ranked]",
-        "detail": "lab2_demo",
-        "documentation": {}
-    },
-    {
         "label": "fitness",
         "kind": 2,
         "importPath": "lab2_demo",
         "description": "lab2_demo",
-        "peekOfCode": "def fitness(perm, P):\n    \"\"\"Kendall tau score: сума узгоджених пар.\"\"\"\n    score = 0\n    for i in range(len(perm)):\n        for j in range(i + 1, len(perm)):\n            score += P[perm[i]][perm[j]]\n    return score\ndef pmx_crossover(p1, p2):\n    \"\"\"Partially Matched Crossover — оператор схрещування для перестановок.\"\"\"\n    n = len(p1)",
+        "peekOfCode": "def fitness(perm, objects, votes):\n    \"\"\"Відстань Кука: сумарне абсолютне відхилення рангів.\"\"\"\n    dist = 0\n    # perm - масив індексів об'єктів\n    rank_in_perm = {}\n    for i, idx in enumerate(perm):\n        obj_id = objects[idx]['id']\n        rank_in_perm[obj_id] = i + 1\n    for v in votes:\n        for p in v['picks']:",
         "detail": "lab2_demo",
         "documentation": {}
     },
@@ -593,7 +584,7 @@
         "kind": 2,
         "importPath": "lab2_demo",
         "description": "lab2_demo",
-        "peekOfCode": "def run_genetic_algorithm(objects, votes, pop_size=50, generations=200, mutation_rate=0.15):\n    print(\"\\n\" + \"=\"*60)\n    print(\"КРОК 2: ГЕНЕТИЧНИЙ АЛГОРИТМ (GA)\")\n    print(\"=\"*60)\n    n = len(objects)\n    P = build_preference_matrix(objects, votes)\n    # Показуємо фрагмент матриці переваг\n    print(f\"\\nМатриця переваг P[i][j] ({n}×{n}):\")\n    names_short = [o['name'][:8] for o in objects]\n    print(f\"{'':>10}\", end=\"\")",
+        "peekOfCode": "def run_genetic_algorithm(objects, votes, pop_size=50, generations=200, mutation_rate=0.15):\n    print(\"\\n\" + \"=\"*60)\n    print(\"КРОК 2: ГЕНЕТИЧНИЙ АЛГОРИТМ (GA)\")\n    print(\"=\"*60)\n    n = len(objects)\n    # Параметри\n    print(f\"\\nПараметри GA:\")\n    print(f\"  Розмір популяції:    {pop_size}\")\n    print(f\"  Кількість поколінь:  {generations}\")\n    print(f\"  Ймовірність мутації: {mutation_rate*100:.0f}%\")",
         "detail": "lab2_demo",
         "documentation": {}
     },

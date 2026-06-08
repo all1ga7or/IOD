@@ -74,35 +74,24 @@ def apply_heuristics(stats):
     print(f"\n→ Залишилось {len(remaining)} об'єктів для фінального ранжування.")
     return remaining
 
-# ===== 3. ПОБУДОВА МАТРИЦІ ПЕРЕВАГ =====
-def build_preference_matrix(objects, votes):
-    """P[i][j] = скільки експертів вважають i кращим за j."""
-    n = len(objects)
-    ids = [o['id'] for o in objects]
-    id_to_idx = {id_: i for i, id_ in enumerate(ids)}
-
-    P = [[0.0] * n for _ in range(n)]
+# ===== 3. ГЕНЕТИЧНИЙ АЛГОРИТМ (Метрика Кука) =====
+def fitness(perm, objects, votes):
+    """Відстань Кука: сумарне абсолютне відхилення рангів."""
+    dist = 0
+    # perm - масив індексів об'єктів
+    rank_in_perm = {}
+    for i, idx in enumerate(perm):
+        obj_id = objects[idx]['id']
+        rank_in_perm[obj_id] = i + 1
 
     for v in votes:
-        ranked = [p for p in v['picks'] if p['id'] in id_to_idx]
-        ranked.sort(key=lambda p: p['rank'])
-        ranked_idxs = [id_to_idx[p['id']] for p in ranked]
-        
-        # Оскільки ми маємо повні ранжування, можемо просто порівнювати всі пари
-        for a in range(len(ranked_idxs)):
-            for b in range(a + 1, len(ranked_idxs)):
-                P[ranked_idxs[a]][ranked_idxs[b]] += 1
-
-    return P
-
-# ===== 4. ГЕНЕТИЧНИЙ АЛГОРИТМ =====
-def fitness(perm, P):
-    """Kendall tau score: сума узгоджених пар."""
-    score = 0
-    for i in range(len(perm)):
-        for j in range(i + 1, len(perm)):
-            score += P[perm[i]][perm[j]]
-    return score
+        for p in v['picks']:
+            obj_id = p['id']
+            if obj_id in rank_in_perm:
+                dist += abs(rank_in_perm[obj_id] - p['rank'])
+    
+    # GA максимізує функцію, тому повертаємо від'ємну відстань Кука
+    return -dist
 
 def pmx_crossover(p1, p2):
     """Partially Matched Crossover — оператор схрещування для перестановок."""
@@ -143,27 +132,6 @@ def run_genetic_algorithm(objects, votes, pop_size=50, generations=200, mutation
     print("="*60)
 
     n = len(objects)
-    P = build_preference_matrix(objects, votes)
-
-    # Показуємо фрагмент матриці переваг
-    print(f"\nМатриця переваг P[i][j] ({n}×{n}):")
-    names_short = [o['name'][:8] for o in objects]
-    print(f"{'':>10}", end="")
-    for ns in names_short:
-        print(f"{ns:>9}", end="")
-    print()
-    for i in range(min(n, 6)):
-        print(f"{names_short[i]:>10}", end="")
-        for j in range(min(n, 6)):
-            if i == j:
-                print(f"{'·':>9}", end="")
-            else:
-                print(f"{P[i][j]:>9.1f}", end="")
-        if n > 6:
-            print("  ...", end="")
-        print()
-    if n > 6:
-        print(f"{'...':>10}")
 
     # Параметри
     print(f"\nПараметри GA:")
@@ -172,20 +140,21 @@ def run_genetic_algorithm(objects, votes, pop_size=50, generations=200, mutation
     print(f"  Ймовірність мутації: {mutation_rate*100:.0f}%")
     print(f"  Оператор кросовера:  PMX (Partially Matched Crossover)")
     print(f"  Селекція:            Top-50% (елітизм)")
+    print(f"  Фітнес-функція:      Мінімізація відстаней Кука (Cook distance)")
 
     # Ініціалізація популяції
     indices = list(range(n))
     population = [random.sample(indices, n) for _ in range(pop_size)]
 
     best_perm = population[0][:]
-    best_fit = fitness(best_perm, P)
+    best_fit = fitness(best_perm, objects, votes)
 
-    print(f"\n{'Покоління':>10} │ {'Кращий Fitness':>15} │ Статус")
+    print(f"\n{'Покоління':>10} │ {'Метрика Кука':>15} │ Статус")
     print('-' * 50)
 
     for gen in range(generations):
         # Оцінка
-        scored = [(p, fitness(p, P)) for p in population]
+        scored = [(p, fitness(p, objects, votes)) for p in population]
         scored.sort(key=lambda x: x[1], reverse=True)
 
         if scored[0][1] > best_fit:
@@ -194,8 +163,8 @@ def run_genetic_algorithm(objects, votes, pop_size=50, generations=200, mutation
 
         # Логування
         if gen % 40 == 0 or gen == generations - 1:
-            status = "← конвергенція!" if gen > 0 and scored[0][1] == best_fit else ""
-            print(f"{gen:>10} | {best_fit:>15.1f} | {status}")
+            status = "← локальний оптимум" if gen > 0 and scored[0][1] == best_fit else ""
+            print(f"{gen:>10} | {abs(best_fit):>15.0f} | {status}")
 
         # Селекція: Топ-50%
         survivors = [s[0] for s in scored[:pop_size // 2]]
@@ -251,15 +220,22 @@ def main():
     final_ranking, best_fitness = run_genetic_algorithm(subset, full_votes)
 
     # Результат
-    print("\n" + '+' + '='*58 + '+')
-    print("|  ФІНАЛЬНИЙ КОМПРОМІСНИЙ РЕЙТИНГ (Результат GA)           |")
-    print('+' + '='*58 + '+')
+    print("\n" + '+' + '='*64 + '+')
+    print("|  ФІНАЛЬНИЙ КОМПРОМІСНИЙ РЕЙТИНГ (Результат GA)                 |")
+    print('+' + '='*64 + '+')
     for i, obj in enumerate(final_ranking):
+        # Для кожного об'єкта розрахуємо сумарне відхилення Кука для наглядності
+        obj_cook = 0
+        for v in full_votes:
+            for p in v['picks']:
+                if p['id'] == obj['id']:
+                    obj_cook += abs(p['rank'] - (i + 1))
+
         medal = "[1]" if i == 0 else "[2]" if i == 1 else "[3]" if i == 2 else f"{i+1:2}."
-        print(f"|  {medal} {obj['name']:<40} (бал: {obj['score']:>2})  |")
-    print('+' + '='*58 + '+')
-    print(f"|  Кращий Fitness (узгодженість): {best_fitness:<25.1f} |")
-    print('+' + '='*58 + '+')
+        print(f"|  {medal} {obj['name']:<40} (сумарне відхилення: {obj_cook:>3}) |")
+    print('+' + '='*64 + '+')
+    print(f"|  Мінімальна метрика Кука: {abs(best_fitness):<35.0f} |")
+    print('+' + '='*64 + '+')
 
 if __name__ == "__main__":
     main()
